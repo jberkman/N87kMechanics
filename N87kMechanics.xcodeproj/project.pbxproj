@@ -9,7 +9,13 @@
 /* Begin PBXBuildFile section */
 		160620D11AA8D3C600A5A5D1 /* N87kMechanics.h in Headers */ = {isa = PBXBuildFile; fileRef = 160620D01AA8D3C600A5A5D1 /* N87kMechanics.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		160620D71AA8D3C600A5A5D1 /* N87kMechanics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 160620CB1AA8D3C600A5A5D1 /* N87kMechanics.framework */; };
-		160620DE1AA8D3C600A5A5D1 /* N87kMechanicsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160620DD1AA8D3C600A5A5D1 /* N87kMechanicsTests.swift */; };
+		160620F31AA8D43000A5A5D1 /* Body.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160620F21AA8D43000A5A5D1 /* Body.swift */; };
+		160620F51AA8D49000A5A5D1 /* dlog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160620F41AA8D49000A5A5D1 /* dlog.swift */; };
+		160620F71AA8D75F00A5A5D1 /* Orbit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160620F61AA8D75F00A5A5D1 /* Orbit.swift */; };
+		160620F91AA8D7A900A5A5D1 /* KebolSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160620F81AA8D7A900A5A5D1 /* KebolSystem.swift */; };
+		160620FB1AA8D7C300A5A5D1 /* KerbolSystem.plist in Resources */ = {isa = PBXBuildFile; fileRef = 160620FA1AA8D7C300A5A5D1 /* KerbolSystem.plist */; };
+		160620FD1AA8DB2500A5A5D1 /* Manoeuvre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160620FC1AA8DB2500A5A5D1 /* Manoeuvre.swift */; };
+		160621031AA8E3D700A5A5D1 /* HohmannTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160621021AA8E3D700A5A5D1 /* HohmannTransfer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,7 +34,14 @@
 		160620D01AA8D3C600A5A5D1 /* N87kMechanics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = N87kMechanics.h; sourceTree = "<group>"; };
 		160620D61AA8D3C600A5A5D1 /* N87kMechanicsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = N87kMechanicsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		160620DC1AA8D3C600A5A5D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		160620DD1AA8D3C600A5A5D1 /* N87kMechanicsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = N87kMechanicsTests.swift; sourceTree = "<group>"; };
+		160620F21AA8D43000A5A5D1 /* Body.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Body.swift; sourceTree = "<group>"; };
+		160620F41AA8D49000A5A5D1 /* dlog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = dlog.swift; sourceTree = "<group>"; };
+		160620F61AA8D75F00A5A5D1 /* Orbit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Orbit.swift; sourceTree = "<group>"; };
+		160620F81AA8D7A900A5A5D1 /* KebolSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KebolSystem.swift; sourceTree = "<group>"; };
+		160620FA1AA8D7C300A5A5D1 /* KerbolSystem.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = KerbolSystem.plist; sourceTree = "<group>"; };
+		160620FC1AA8DB2500A5A5D1 /* Manoeuvre.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Manoeuvre.swift; sourceTree = "<group>"; };
+		160620FE1AA8DC0800A5A5D1 /* HohmannTransferTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HohmannTransferTests.swift; sourceTree = "<group>"; };
+		160621021AA8E3D700A5A5D1 /* HohmannTransfer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HohmannTransfer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,7 +84,13 @@
 		160620CD1AA8D3C600A5A5D1 /* N87kMechanics */ = {
 			isa = PBXGroup;
 			children = (
+				160620F21AA8D43000A5A5D1 /* Body.swift */,
+				160620F41AA8D49000A5A5D1 /* dlog.swift */,
+				160620FC1AA8DB2500A5A5D1 /* Manoeuvre.swift */,
+				160621021AA8E3D700A5A5D1 /* HohmannTransfer.swift */,
+				160620F81AA8D7A900A5A5D1 /* KebolSystem.swift */,
 				160620D01AA8D3C600A5A5D1 /* N87kMechanics.h */,
+				160620F61AA8D75F00A5A5D1 /* Orbit.swift */,
 				160620CE1AA8D3C600A5A5D1 /* Supporting Files */,
 			);
 			path = N87kMechanics;
@@ -80,6 +99,7 @@
 		160620CE1AA8D3C600A5A5D1 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				160620FA1AA8D7C300A5A5D1 /* KerbolSystem.plist */,
 				160620CF1AA8D3C600A5A5D1 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -88,7 +108,7 @@
 		160620DA1AA8D3C600A5A5D1 /* N87kMechanicsTests */ = {
 			isa = PBXGroup;
 			children = (
-				160620DD1AA8D3C600A5A5D1 /* N87kMechanicsTests.swift */,
+				160620FE1AA8DC0800A5A5D1 /* HohmannTransferTests.swift */,
 				160620DB1AA8D3C600A5A5D1 /* Supporting Files */,
 			);
 			path = N87kMechanicsTests;
@@ -192,6 +212,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				160620FB1AA8D7C300A5A5D1 /* KerbolSystem.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,6 +230,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				160620F31AA8D43000A5A5D1 /* Body.swift in Sources */,
+				160620FD1AA8DB2500A5A5D1 /* Manoeuvre.swift in Sources */,
+				160621031AA8E3D700A5A5D1 /* HohmannTransfer.swift in Sources */,
+				160620F51AA8D49000A5A5D1 /* dlog.swift in Sources */,
+				160620F91AA8D7A900A5A5D1 /* KebolSystem.swift in Sources */,
+				160620F71AA8D75F00A5A5D1 /* Orbit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,7 +243,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				160620DE1AA8D3C600A5A5D1 /* N87kMechanicsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -319,6 +345,7 @@
 		160620E21AA8D3C600A5A5D1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -328,12 +355,14 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		160620E31AA8D3C600A5A5D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -395,6 +424,7 @@
 				160620E31AA8D3C600A5A5D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		160620E41AA8D3C600A5A5D1 /* Build configuration list for PBXNativeTarget "N87kMechanicsTests" */ = {
 			isa = XCConfigurationList;
@@ -403,6 +433,7 @@
 				160620E61AA8D3C600A5A5D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -113,6 +113,7 @@ public class Orbit: NSObject {
     public override func copy() -> AnyObject {
         let obj = Orbit()
         obj.relativeVelocity = relativeVelocity
+        obj.apoapsis = apoapsis
         obj.periapsis = periapsis
         obj.timeToApoapsis = timeToApoapsis
         obj.timeToPeriapsis = timeToPeriapsis

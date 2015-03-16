@@ -1,8 +1,8 @@
 //
-//  dlog.swift
+//  Observable.swift
 //  N87kMechanics
 //
-//  Created by jacob berkman on 2015-03-05.
+//  Created by jacob berkman on 2015-03-14.
 //  Copyright © 2015 jacob berkman
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,8 +26,13 @@
 
 import Foundation
 
-func dlog<T>(msg: @autoclosure () -> T) {
-    #if DEBUG
-        NSLog("N87kMechanics: %@", toString(msg()))
-    #endif
+@objc
+public protocol Observable: NSObjectProtocol {
+    func addObserver(observer: NSObject, forKeyPath keyPath: String, options: NSKeyValueObservingOptions, context: UnsafeMutablePointer<Void>)
+    @availability(iOS, introduced=5.0)
+    func removeObserver(observer: NSObject, forKeyPath keyPath: String, context: UnsafeMutablePointer<Void>)
+    func removeObserver(observer: NSObject, forKeyPath keyPath: String)
+
+    func addObserver(observer: NSObject, context: ObserverContext)
+    func removeObserver(observer: NSObject, context: ObserverContext)
 }

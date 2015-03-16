@@ -1,8 +1,8 @@
 //
-//  dlog.swift
+//  UniversalTime.swift
 //  N87kMechanics
 //
-//  Created by jacob berkman on 2015-03-05.
+//  Created by jacob berkman on 2015-03-13.
 //  Copyright © 2015 jacob berkman
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,8 +26,12 @@
 
 import Foundation
 
-func dlog<T>(msg: @autoclosure () -> T) {
-    #if DEBUG
-        NSLog("N87kMechanics: %@", toString(msg()))
-    #endif
+private let sharedTime = UniversalTime()
+
+public class UniversalTime: NSObject {
+
+    public class var currentUniversalTime: UniversalTime { return sharedTime }
+
+    public dynamic var timeIntervalSinceEpoch: NSTimeInterval = 0.0
+
 }

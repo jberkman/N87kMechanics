@@ -1,8 +1,8 @@
 //
-//  dlog.swift
+//  OrbitalParameter.swift
 //  N87kMechanics
 //
-//  Created by jacob berkman on 2015-03-05.
+//  Created by jacob berkman on 2015-03-11.
 //  Copyright © 2015 jacob berkman
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,8 +26,29 @@
 
 import Foundation
 
-func dlog<T>(msg: @autoclosure () -> T) {
-    #if DEBUG
-        NSLog("N87kMechanics: %@", toString(msg()))
-    #endif
+public enum OrbitalParameter {
+    case Apoapsis, Periapsis
+
+    public func valueWithOrbit(orbit: Orbit) -> Double {
+        return self == .Apoapsis ? orbit.apoapsis : orbit.periapsis
+    }
+
+    public func setValue(value: Double, orbit: Orbit) {
+        switch self {
+        case .Apoapsis: orbit.apoapsis = value
+        case .Periapsis: orbit.periapsis = value
+        }
+    }
+
+    public func otherValueWithOrbit(orbit: Orbit) -> Double {
+        return self == .Apoapsis ? orbit.periapsis : orbit.apoapsis
+    }
+
+    public func setOtherValue(value: Double, orbit: Orbit) {
+        switch self {
+        case .Apoapsis: orbit.periapsis = value
+        case .Periapsis: orbit.apoapsis = value
+        }
+    }
+
 }

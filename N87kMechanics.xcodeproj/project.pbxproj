@@ -11,10 +11,15 @@
 		160620D71AA8D3C600A5A5D1 /* N87kMechanics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 160620CB1AA8D3C600A5A5D1 /* N87kMechanics.framework */; };
 		160620F31AA8D43000A5A5D1 /* Body.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160620F21AA8D43000A5A5D1 /* Body.swift */; };
 		160620F51AA8D49000A5A5D1 /* dlog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160620F41AA8D49000A5A5D1 /* dlog.swift */; };
-		160620F71AA8D75F00A5A5D1 /* Orbit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160620F61AA8D75F00A5A5D1 /* Orbit.swift */; };
-		160620F91AA8D7A900A5A5D1 /* KebolSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160620F81AA8D7A900A5A5D1 /* KebolSystem.swift */; };
-		160620FB1AA8D7C300A5A5D1 /* KerbolSystem.plist in Resources */ = {isa = PBXBuildFile; fileRef = 160620FA1AA8D7C300A5A5D1 /* KerbolSystem.plist */; };
 		160620FD1AA8DB2500A5A5D1 /* Manoeuvre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160620FC1AA8DB2500A5A5D1 /* Manoeuvre.swift */; };
+		162D401D1AB14F3600283AFD /* OrbitalParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162D401C1AB14F3600283AFD /* OrbitalParameter.swift */; };
+		1688990E1AB5719500C6B325 /* SimpleOrbit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1688990D1AB5719500C6B325 /* SimpleOrbit.swift */; };
+		168899141AB5795B00C6B325 /* SimpleBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168899131AB5795B00C6B325 /* SimpleBody.swift */; };
+		168899161AB57EA000C6B325 /* SimpleManoeuvre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168899151AB57EA000C6B325 /* SimpleManoeuvre.swift */; };
+		16ECA1FD1AB2CE2200FF9762 /* ObserverContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16ECA1FC1AB2CE2200FF9762 /* ObserverContext.swift */; };
+		16ECA1FF1AB3EE1100FF9762 /* UniversalTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16ECA1FE1AB3EE1100FF9762 /* UniversalTime.swift */; };
+		16ECA20D1AB5580900FF9762 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16ECA20C1AB5580900FF9762 /* Observable.swift */; };
+		16ECA2101AB55E0B00FF9762 /* Orbit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160620F61AA8D75F00A5A5D1 /* Orbit.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,10 +41,15 @@
 		160620F21AA8D43000A5A5D1 /* Body.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Body.swift; sourceTree = "<group>"; };
 		160620F41AA8D49000A5A5D1 /* dlog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = dlog.swift; sourceTree = "<group>"; };
 		160620F61AA8D75F00A5A5D1 /* Orbit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Orbit.swift; sourceTree = "<group>"; };
-		160620F81AA8D7A900A5A5D1 /* KebolSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KebolSystem.swift; sourceTree = "<group>"; };
-		160620FA1AA8D7C300A5A5D1 /* KerbolSystem.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = KerbolSystem.plist; sourceTree = "<group>"; };
 		160620FC1AA8DB2500A5A5D1 /* Manoeuvre.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Manoeuvre.swift; sourceTree = "<group>"; };
 		160620FE1AA8DC0800A5A5D1 /* HohmannTransferTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HohmannTransferTests.swift; sourceTree = "<group>"; };
+		162D401C1AB14F3600283AFD /* OrbitalParameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrbitalParameter.swift; sourceTree = "<group>"; };
+		1688990D1AB5719500C6B325 /* SimpleOrbit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleOrbit.swift; sourceTree = "<group>"; };
+		168899131AB5795B00C6B325 /* SimpleBody.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleBody.swift; sourceTree = "<group>"; };
+		168899151AB57EA000C6B325 /* SimpleManoeuvre.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleManoeuvre.swift; sourceTree = "<group>"; };
+		16ECA1FC1AB2CE2200FF9762 /* ObserverContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObserverContext.swift; sourceTree = "<group>"; };
+		16ECA1FE1AB3EE1100FF9762 /* UniversalTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UniversalTime.swift; sourceTree = "<group>"; };
+		16ECA20C1AB5580900FF9762 /* Observable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,10 +95,16 @@
 				160620F21AA8D43000A5A5D1 /* Body.swift */,
 				160620F41AA8D49000A5A5D1 /* dlog.swift */,
 				160620FC1AA8DB2500A5A5D1 /* Manoeuvre.swift */,
-				160620F81AA8D7A900A5A5D1 /* KebolSystem.swift */,
 				160620D01AA8D3C600A5A5D1 /* N87kMechanics.h */,
+				16ECA20C1AB5580900FF9762 /* Observable.swift */,
+				16ECA1FC1AB2CE2200FF9762 /* ObserverContext.swift */,
 				160620F61AA8D75F00A5A5D1 /* Orbit.swift */,
+				162D401C1AB14F3600283AFD /* OrbitalParameter.swift */,
+				168899131AB5795B00C6B325 /* SimpleBody.swift */,
+				168899151AB57EA000C6B325 /* SimpleManoeuvre.swift */,
+				1688990D1AB5719500C6B325 /* SimpleOrbit.swift */,
 				160620CE1AA8D3C600A5A5D1 /* Supporting Files */,
+				16ECA1FE1AB3EE1100FF9762 /* UniversalTime.swift */,
 			);
 			path = N87kMechanics;
 			sourceTree = "<group>";
@@ -96,7 +112,6 @@
 		160620CE1AA8D3C600A5A5D1 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				160620FA1AA8D7C300A5A5D1 /* KerbolSystem.plist */,
 				160620CF1AA8D3C600A5A5D1 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -209,7 +224,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				160620FB1AA8D7C300A5A5D1 /* KerbolSystem.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,10 +242,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				160620F31AA8D43000A5A5D1 /* Body.swift in Sources */,
+				162D401D1AB14F3600283AFD /* OrbitalParameter.swift in Sources */,
 				160620FD1AA8DB2500A5A5D1 /* Manoeuvre.swift in Sources */,
 				160620F51AA8D49000A5A5D1 /* dlog.swift in Sources */,
-				160620F91AA8D7A900A5A5D1 /* KebolSystem.swift in Sources */,
-				160620F71AA8D75F00A5A5D1 /* Orbit.swift in Sources */,
+				16ECA20D1AB5580900FF9762 /* Observable.swift in Sources */,
+				168899141AB5795B00C6B325 /* SimpleBody.swift in Sources */,
+				16ECA1FF1AB3EE1100FF9762 /* UniversalTime.swift in Sources */,
+				1688990E1AB5719500C6B325 /* SimpleOrbit.swift in Sources */,
+				16ECA2101AB55E0B00FF9762 /* Orbit.swift in Sources */,
+				16ECA1FD1AB2CE2200FF9762 /* ObserverContext.swift in Sources */,
+				168899161AB57EA000C6B325 /* SimpleManoeuvre.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

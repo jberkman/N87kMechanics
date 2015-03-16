@@ -1,8 +1,8 @@
 //
-//  dlog.swift
+//  ObserverContext.swift
 //  N87kMechanics
 //
-//  Created by jacob berkman on 2015-03-05.
+//  Created by jacob berkman on 2015-03-09.
 //  Copyright © 2015 jacob berkman
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,8 +26,24 @@
 
 import Foundation
 
-func dlog<T>(msg: @autoclosure () -> T) {
-    #if DEBUG
-        NSLog("N87kMechanics: %@", toString(msg()))
-    #endif
+public class ObserverContext: NSObject {
+    public let keyPath: String
+    public let options: NSKeyValueObservingOptions
+    public var context = 0
+    public init(keyPath: String, options: NSKeyValueObservingOptions = nil) {
+        self.keyPath = keyPath
+        self.options = options
+    }
+}
+
+public extension NSObject {
+
+    public func addObserver(observer: NSObject, context: ObserverContext) {
+        addObserver(observer, forKeyPath: context.keyPath, options: context.options, context: &context.context)
+    }
+
+    public func removeObserver(observer: NSObject, context: ObserverContext) {
+        removeObserver(observer, forKeyPath: context.keyPath, context: &context.context)
+    }
+    
 }

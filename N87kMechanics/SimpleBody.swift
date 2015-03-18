@@ -51,7 +51,6 @@ public class SimpleBody: NSObject {
         self.maxAtmosphere = maxAtmosphere
         self.atmosphereContainsOxygen = atmosphereContainsOxygen
         super.init()
-        orbit.primaryBody = self
     }
 
     public init(values: NSDictionary) {
@@ -64,7 +63,6 @@ public class SimpleBody: NSObject {
         maxAtmosphere = (values["maxAtmosphere"] as? NSNumber)?.doubleValue ?? 0
         atmosphereContainsOxygen = (values["atmosphereContainsOxygen"] as? NSNumber)?.boolValue ?? false
         super.init()
-        orbit.primaryBody = self
     }
 
 }

@@ -43,8 +43,6 @@ public class SimpleOrbit: NSObject {
     public dynamic var timeToTransition1: NSTimeInterval = 0
     public dynamic var timeToTransition2: NSTimeInterval = 0
 
-    private lazy var currentUniversalTime = UniversalTime.currentUniversalTime
-
 }
 
 extension SimpleOrbit: Orbit {
@@ -123,7 +121,7 @@ extension SimpleOrbit: Orbit {
     }
 
     @objc public class func keyPathsForValuesAffectingMeanAnomaly() -> NSSet {
-        return keyPathsForValuesAffectingMeanMotion().setByAddingObjectsFromArray([ "currentUniversalTime.timeIntervalSinceEpoch", "epoch", "meanAnomalyAtEpoch" ])
+        return keyPathsForValuesAffectingMeanMotion().setByAddingObjectsFromArray([ "epoch", "meanAnomalyAtEpoch" ])
     }
 
     public func meanAnomalyWithTrueAnomaly(trueAnomaly: Double) -> Double {
@@ -140,7 +138,7 @@ extension SimpleOrbit: Orbit {
     }
 
     @objc public class func keyPathsForValuesAffectingTrueAnomaly() -> NSSet {
-        return keyPathsForValuesAffectingMeanAnomaly().setByAddingObjectsFromArray([ "currentUniversalTime.timeIntervalSinceEpoch", "eccentricity" ])
+        return keyPathsForValuesAffectingMeanAnomaly().setByAddingObjectsFromArray([ "eccentricity" ])
     }
 
     // Eccentric Anomaly

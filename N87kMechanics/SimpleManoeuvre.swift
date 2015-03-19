@@ -82,9 +82,22 @@ extension SimpleManoeuvre: Manoeuvre {
 
     public var isTransfer: Bool { return N87kMechanics.isTransfer(self) }
 
+    @objc public class func keyPathsForValuesAffectingIsTransfer() -> NSSet {
+        return NSSet(array: [ "sourceBody", "targetBody" ])
+    }
+
     public dynamic var ejectionAngle: Double { return N87kMechanics.ejectionAngle(self) }
+
+    @objc public class func keyPathsForValuesAffectingEjectionAngle() -> NSSet {
+        return keyPathsForValuesAffectingEjectionVelocity()
+    }
+
     public dynamic var currentPhaseAngle: Double { return N87kMechanics.currentPhaseAngle(self) }
     public dynamic var ejectionVelocity: Double { return N87kMechanics.ejectionVelocity(self) }
+
+    @objc public class func keyPathsForValuesAffectingEjectionVelocity() -> NSSet {
+        return NSSet(array: [ "sourceBody.radius", "sourceOrbit.periapsis", "sourceBody.sphereOfInfluence", "sourceBody.orbit.gravitationalParameter", "deltaV" ])
+    }
 
     public func ejectionDeltaVWithOrbit(orbit: Orbit) -> Double { return N87kMechanics.ejectionDeltaVWithOrbit(self, orbit) }
     public func deltaVWithOrbit(orbit: Orbit) -> Double { return N87kMechanics.deltaVWithOrbit(self, orbit) }

@@ -142,7 +142,7 @@ public func meanMotion(orbit: Orbit) -> Double {
 }
 
 public func period(orbit: Orbit) -> NSTimeInterval {
-    return twoπ * meanMotion(orbit)
+    return twoπ / meanMotion(orbit)
 }
 
 // Mean Anomaly
@@ -210,10 +210,9 @@ public func timeIntervalUntilEjectionAngle(orbit: Orbit, ejectionAngle: Double) 
     return period(orbit) * ((anglePrograde(orbit) - ejectionAngle + twoπ) % twoπ) / twoπ
 }
 
-
 // "Theta"
 public func thetaAtTime(orbit: Orbit, time: NSTimeInterval) -> Double {
-    return (orbit.meanAnomalyAtEpoch + orbit.longitudeOfAscendingNode + trueAnomalyAtTime(orbit, time)) % twoπ
+    return (orbit.longitudeOfAscendingNode + orbit.argumentOfPeriapsis + trueAnomalyAtTime(orbit, time)) % twoπ
 }
 
 public func theta(orbit: Orbit) -> Double {

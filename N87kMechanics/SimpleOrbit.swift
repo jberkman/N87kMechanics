@@ -48,12 +48,12 @@ public class SimpleOrbit: NSObject {
 extension SimpleOrbit: Orbit {
 
     // Outputs
-    public var isStable: Bool { return N87kMechanics.isStable(self) }
+    public var isStable: Bool? { return N87kMechanics.isStable(self) }
 
     // Periapsis
-    public dynamic var periapsis: Double {
+    public dynamic var periapsis: NSNumber? {
         get { return N87kMechanics.periapsis(self) }
-        set { setPeriapsis(self, newValue) }
+        set { setPeriapsis(self, newValue!) }
     }
 
     @objc public class func keyPathsForValuesAffectingPeriapsis() -> NSSet {

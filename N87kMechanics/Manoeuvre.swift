@@ -28,17 +28,17 @@ import Foundation
 
 private let twoπ = 2 * M_PI
 
-@objc
+//@objc
 public protocol ManoeuvreType: NSObjectProtocol {
     var manoeuvre: Manoeuvre? { get }
 }
 
-@objc
+//@objc
 public protocol MutableManoeuvreType: ManoeuvreType {
     var manoeuvre: Manoeuvre? { get set }
 }
 
-@objc
+//@objc
 public protocol Manoeuvre: Observable {
 
     // Inputs
@@ -69,6 +69,7 @@ public protocol Manoeuvre: Observable {
 
     var description: String { get }
 
+    func createLaunchOrbit()
 }
 
 public func isTransfer(manoeuvre: Manoeuvre) -> Bool {
@@ -82,7 +83,7 @@ public func description(manoeuvre: Manoeuvre) -> String {
     case (nil, nil): return "Empty manoeuvre"
     case (nil, _): return "Launch from \(sourceBodyName)"
     case (_, nil): return "Land on \(targetBodyName)"
-    case (_, _) where sourceBodyName != targetBodyName: return "Transfer from \(sourceBodyName) to \(targetBodyName)"
+    case (_, _) where sourceBodyName != targetBodyName: return "Transfer to \(targetBodyName)"
     default: return "Change \(sourceBodyName) orbit"
     }
 }

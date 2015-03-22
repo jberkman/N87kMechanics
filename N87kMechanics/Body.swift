@@ -28,7 +28,7 @@ import Foundation
 
 private let twoπ = 2 * M_PI
 
-@objc
+//@objc
 public protocol Body: NSObjectProtocol {
     var bodyID: Int64 { get }
     var name: String { get }

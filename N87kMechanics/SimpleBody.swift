@@ -38,7 +38,7 @@ public class SimpleBody: NSObject {
     public let rotationPeriod: NSTimeInterval
     public let sphereOfInfluence: Double
 
-    public let orbit: Orbit! = SimpleOrbit()
+    public let orbit: Orbit? = SimpleOrbit()
     public let secondaryBodies: NSSet = NSMutableSet()
 
     public init(bodyID: Int64, name: String, mass: Double, radius: Double, rotationPeriod: Double, sphereOfInfluence: Double, maxAtmosphere: Double = 0, atmosphereContainsOxygen: Bool = false) {
@@ -69,14 +69,14 @@ public class SimpleBody: NSObject {
 
 extension SimpleBody: Body {
 
-    public var tidallyLocked: Bool { return N87kMechanics.tidallyLocked(self) }
+    public var tidallyLocked: NSNumber? { return N87kMechanics.tidallyLocked(self) }
 
-    public var parkingOrbitHeight: Double { return N87kMechanics.parkingOrbitHeight(self) }
-    public var synchronousOrbitHeight: Double { return N87kMechanics.synchronousOrbitHeight(self) }
-    public var semiSynchronousOrbitHeight: Double { return N87kMechanics.semiSynchronousOrbitHeight(self) }
+    public var parkingOrbitHeight: NSNumber? { return N87kMechanics.parkingOrbitHeight(self) }
+    public var synchronousOrbitHeight: NSNumber? { return N87kMechanics.synchronousOrbitHeight(self) }
+    public var semiSynchronousOrbitHeight: NSNumber? { return N87kMechanics.semiSynchronousOrbitHeight(self) }
 
     public func addSecondaryBody(body: Body) {
-        body.orbit.primaryBody = self
+        body.orbit?.primaryBody = self
         (secondaryBodies as NSMutableSet).addObject(body)
     }
 

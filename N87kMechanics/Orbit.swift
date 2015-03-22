@@ -47,40 +47,41 @@ public protocol Orbit: Observable {
     var timeToTransition2: NSTimeInterval { get set }
 
     // inout
-    var periapsis: Double { get set }
-    var apoapsis: Double { get set }
+    var periapsis: NSNumber? { get set }
+    var apoapsis: NSNumber? { get set }
 
     // Output
-    var isStable: Bool { get }
+    var isStable: NSNumber? { get }
 
-    var timeOfPeriapsisPassage: NSTimeInterval { get }
-    var timeToPeriapsis: NSTimeInterval { get }
-    var timeToApoapsis: NSTimeInterval { get }
+    var timeOfPeriapsisPassage: NSNumber? { get }
+    var timeToPeriapsis: NSNumber? { get }
+    var timeToApoapsis: NSNumber? { get }
 
-    var meanMotion: Double { get }
-    var period: Double { get }
+    var meanMotion: NSNumber? { get }
+    var period: NSNumber? { get }
 
-    var meanAnomaly: Double { get }
-    func meanAnomalyAtTime(time: NSTimeInterval) -> Double
-    func meanAnomalyWithTrueAnomaly(trueAnomaly: Double) -> Double
+    var meanAnomaly: NSNumber? { get }
+    func meanAnomalyAtTime(time: NSTimeInterval) -> NSNumber?
+    func meanAnomalyWithTrueAnomaly(trueAnomaly: Double) -> NSNumber?
 
-    var trueAnomaly: Double { get }
-    func trueAnomalyAtTime(time: NSTimeInterval) -> Double
+    var trueAnomaly: NSNumber? { get }
+    func trueAnomalyAtTime(time: NSTimeInterval) -> NSNumber?
 
-    var eccentricAnomaly: Double { get }
-    func eccentricAnomalyWithTrueAnomaly(trueAnomaly: Double) -> Double
+    var eccentricAnomaly: NSNumber? { get }
+    func eccentricAnomalyWithTrueAnomaly(trueAnomaly: Double) -> NSNumber?
 
-    var radius: Double { get }
-    func radiusWithTrueAnomaly(trueAnomaly: Double) -> Double
+    var radius: NSNumber? { get }
+    func radiusWithTrueAnomaly(trueAnomaly: Double) -> NSNumber?
 
-    var relativeVelocity: Double { get }
-    func relativeVelocityWithRadius(radius: Double) -> Double
+    var relativeVelocity: NSNumber? { get }
+    func relativeVelocityWithRadius(radius: Double) -> NSNumber?
 
-    var anglePrograde: Double { get }
-    func timeIntervalUntilEjectionAngle(ejectionAngle: Double) -> NSTimeInterval
+    var anglePrograde: NSNumber? { get }
+    func timeIntervalUntilEjectionAngle(ejectionAngle: Double) -> NSNumber?
 
-    var theta: Double { get }
-    func thetaAtTime(time: NSTimeInterval) -> Double
+    var theta: NSNumber? { get }
+    func thetaAtTime(time: NSTimeInterval) -> NSNumber?
+
 }
 
 public func copy(dest: Orbit, source: Orbit) {
@@ -99,58 +100,99 @@ public func copy(dest: Orbit, source: Orbit) {
     dest.timeToTransition2 = source.timeToTransition2
 }
 
-public func isStable(orbit: Orbit) -> Bool {
-    return orbit.periapsis > orbit.primaryBody!.maxAtmosphere && orbit.apoapsis < orbit.primaryBody!.sphereOfInfluence
+public func isStable(orbit: Orbit) -> Bool? {
+    if let primaryBody = orbit.primaryBody {
+        if let apoapsis = orbit.apoapsis?.doubleValue {
+            if let periapsis = orbit.periapsis?.doubleValue {
+                return periapsis > primaryBody.maxAtmosphere && apoapsis < primaryBody.sphereOfInfluence
+            }
+        }
+    }
+    return nil
 }
 
-public func periapsis(orbit: Orbit) -> Double {
-    return orbit.semiMajorAxis * (1 - orbit.eccentricity) - orbit.primaryBody!.radius
+public func periapsis(orbit: Orbit) -> Double? {
+    if let radius = orbit.primaryBody?.radius {
+        return orbit.semiMajorAxis * (1 - orbit.eccentricity) - radius
+    }
+    return nil
 }
 
 public func setPeriapsis(orbit: Orbit, periapsis: Double) {
-    let oldApoapsis = apoapsis(orbit)
-    orbit.eccentricity = abs(oldApoapsis - periapsis) / (oldApoapsis + periapsis + 2 * orbit.primaryBody!.radius)
-    orbit.semiMajorAxis = (oldApoapsis + periapsis) / 2 + orbit.primaryBody!.radius
+    if let radius = orbit.primaryBody?.radius {
+        if let oldApoapsis = apoapsis(orbit) {
+            orbit.eccentricity = abs(oldApoapsis - periapsis) / (oldApoapsis + periapsis + 2 * radius)
+            orbit.semiMajorAxis = (oldApoapsis + periapsis) / 2 + radius
+        }
+    }
 }
 
-public func timeOfPeriapsisPassage(orbit: Orbit) -> NSTimeInterval {
-    return (twoπ - orbit.meanAnomalyAtEpoch) / meanMotion(orbit)
+public func timeOfPeriapsisPassage(orbit: Orbit) -> NSTimeInterval? {
+    if let meanMotion = meanMotion(orbit) {
+        return (twoπ - orbit.meanAnomalyAtEpoch) / meanMotion
+    }
+    return nil
 }
 
-public func timeToPeriapsis(orbit: Orbit) -> NSTimeInterval {
-    return (twoπ - meanAnomaly(orbit)) / meanMotion(orbit)
+public func timeToPeriapsis(orbit: Orbit) -> NSTimeInterval? {
+    if let meanMotion = meanMotion(orbit) {
+        if let meanAnomaly = meanAnomaly(orbit) {
+            return (twoπ - meanAnomaly) / meanMotion
+        }
+    }
+    return nil
 }
 
 // Apoapsis
-public func apoapsis(orbit: Orbit) -> Double {
-    return orbit.semiMajorAxis * (1 + orbit.eccentricity) - orbit.primaryBody!.radius
+public func apoapsis(orbit: Orbit) -> Double? {
+    if let radius = orbit.primaryBody?.radius {
+        return orbit.semiMajorAxis * (1 + orbit.eccentricity) - radius
+    }
+    return nil
 }
 
 public func setApoapsis(orbit: Orbit, apoapsis: Double) {
-    let oldPeriapsis = periapsis(orbit)
-    orbit.eccentricity = abs(apoapsis - oldPeriapsis) / (apoapsis + oldPeriapsis + 2 * orbit.primaryBody!.radius)
-    orbit.semiMajorAxis = (apoapsis + oldPeriapsis) / 2 + orbit.primaryBody!.radius
+    if let radius = orbit.primaryBody?.radius {
+        if let oldPeriapsis = periapsis(orbit) {
+            orbit.eccentricity = abs(apoapsis - oldPeriapsis) / (apoapsis + oldPeriapsis + 2 * radius)
+            orbit.semiMajorAxis = (apoapsis + oldPeriapsis) / 2 + radius
+        }
+    }
 }
 
-public func timeToApoapsis(orbit: Orbit) -> NSTimeInterval {
-    return ((3 * M_PI - meanAnomaly(orbit)) % twoπ) / meanMotion(orbit)
+public func timeToApoapsis(orbit: Orbit) -> NSTimeInterval? {
+    if let meanMotion = meanMotion(orbit) {
+        if let meanAnomaly = meanAnomaly(orbit) {
+            return ((3 * M_PI - meanAnomaly) % twoπ) / meanMotion
+        }
+    }
+    return nil
 }
 
 // Mean Motion / Period
-public func meanMotion(orbit: Orbit) -> Double {
-    return sqrt(orbit.primaryBody!.orbit.gravitationalParameter / pow(orbit.semiMajorAxis, 3))
+public func meanMotion(orbit: Orbit) -> Double? {
+    if let µ = orbit.primaryBody?.orbit?.gravitationalParameter {
+        return sqrt(µ / pow(orbit.semiMajorAxis, 3))
+    }
+    return nil
 }
 
-public func period(orbit: Orbit) -> NSTimeInterval {
-    return twoπ / meanMotion(orbit)
+public func period(orbit: Orbit) -> NSTimeInterval? {
+    if let meanMotion = meanMotion(orbit) {
+        return twoπ / meanMotion
+    }
+    return nil
 }
 
 // Mean Anomaly
-public func meanAnomalyAtTime(orbit: Orbit, time: NSTimeInterval) -> Double {
-    return (orbit.meanAnomalyAtEpoch + (time - orbit.epoch) * meanMotion(orbit)) % twoπ
+public func meanAnomalyAtTime(orbit: Orbit, time: NSTimeInterval) -> Double? {
+    if let meanMotion = meanMotion(orbit) {
+        return (orbit.meanAnomalyAtEpoch + (time - orbit.epoch) * meanMotion) % twoπ
+    }
+    return nil
 }
 
-public func meanAnomaly(orbit: Orbit) -> Double {
+public func meanAnomaly(orbit: Orbit) -> Double? {
     return meanAnomalyAtTime(orbit, UniversalTime.currentUniversalTime.timeIntervalSinceEpoch)
 }
 
@@ -160,12 +202,14 @@ public func meanAnomalyWithTrueAnomaly(orbit: Orbit, trueAnomaly: Double) -> Dou
 }
 
 // True Anomaly
-public func trueAnomalyAtTime(orbit: Orbit, time: NSTimeInterval) -> Double {
-    let M = meanAnomalyAtTime(orbit, time)
-    return (M + 2 * orbit.eccentricity * sin(M) + 1.25 * pow(orbit.eccentricity, 2) * sin(2 * M)) % twoπ
+public func trueAnomalyAtTime(orbit: Orbit, time: NSTimeInterval) -> Double? {
+    if let M = meanAnomalyAtTime(orbit, time) {
+        return (M + 2 * orbit.eccentricity * sin(M) + 1.25 * pow(orbit.eccentricity, 2) * sin(2 * M)) % twoπ
+    }
+    return nil
 }
 
-public func trueAnomaly(orbit: Orbit) -> Double {
+public func trueAnomaly(orbit: Orbit) -> Double? {
     return trueAnomalyAtTime(orbit, UniversalTime.currentUniversalTime.timeIntervalSinceEpoch)
 }
 
@@ -176,8 +220,11 @@ public func eccentricAnomalyWithTrueAnomaly(orbit: Orbit, trueAnomaly: Double) -
     return trueAnomaly >= M_PI ? twoπ - tmp : tmp
 }
 
-public func eccentricAnomaly(orbit: Orbit) -> Double {
-    return eccentricAnomalyWithTrueAnomaly(orbit, trueAnomaly(orbit))
+public func eccentricAnomaly(orbit: Orbit) -> Double? {
+    if let trueAnomaly = trueAnomaly(orbit) {
+        return eccentricAnomalyWithTrueAnomaly(orbit, trueAnomaly)
+    }
+    return nil
 }
 
 // Radius
@@ -185,36 +232,59 @@ public func radiusWithTrueAnomaly(orbit: Orbit, trueAnomaly: Double) -> Double {
     return orbit.semiMajorAxis * (1 - pow(orbit.eccentricity, 2)) / (1 + orbit.eccentricity * cos(trueAnomaly))
 }
 
-public func radius(orbit: Orbit) -> Double {
-    return radiusWithTrueAnomaly(orbit, trueAnomaly(orbit))
+public func radius(orbit: Orbit) -> Double? {
+    if let trueAnomaly = trueAnomaly(orbit) {
+        return radiusWithTrueAnomaly(orbit, trueAnomaly)
+    }
+    return nil
 }
 
 // Velocity
-public func relativeVelocityWithRadius(orbit: Orbit, radius: Double) -> Double {
-    return sqrt(orbit.primaryBody!.orbit.gravitationalParameter * (2 / radius - 1 / orbit.semiMajorAxis))
+public func relativeVelocityWithRadius(orbit: Orbit, radius: Double) -> Double? {
+    if let µ = orbit.primaryBody?.orbit?.gravitationalParameter {
+        return sqrt(µ * (2 / radius - 1 / orbit.semiMajorAxis))
+    }
+    return nil
 }
 
-public func relativeVelocity(orbit: Orbit) -> Double {
-    return relativeVelocityWithRadius(orbit, radius(orbit))
+public func relativeVelocity(orbit: Orbit) -> Double? {
+    if let radius = radius(orbit) {
+        return relativeVelocityWithRadius(orbit, radius)
+    }
+    return nil
 }
 
 // Transfers
-public func anglePrograde(orbit: Orbit) -> Double {
-    let primaryOrbit = orbit.primaryBody!.orbit
-    let a = (primaryOrbit.trueAnomaly + primaryOrbit.longitudeOfAscendingNode + primaryOrbit.argumentOfPeriapsis + M_PI_2) % twoπ
-    let b = (trueAnomaly(orbit) + orbit.longitudeOfAscendingNode + orbit.argumentOfPeriapsis) % twoπ
-    return (a - b + twoπ) % twoπ
+public func anglePrograde(orbit: Orbit) -> Double? {
+    if let primaryOrbit = orbit.primaryBody?.orbit {
+        if let primaryTrueAnomaly = primaryOrbit.trueAnomaly?.doubleValue {
+            if let trueAnomaly = trueAnomaly(orbit) {
+                let a = (primaryTrueAnomaly + primaryOrbit.longitudeOfAscendingNode + primaryOrbit.argumentOfPeriapsis + M_PI_2) % twoπ
+                let b = (trueAnomaly + orbit.longitudeOfAscendingNode + orbit.argumentOfPeriapsis) % twoπ
+                return (a - b + twoπ) % twoπ
+            }
+        }
+    }
+    return nil
 }
 
-public func timeIntervalUntilEjectionAngle(orbit: Orbit, ejectionAngle: Double) -> NSTimeInterval {
-    return period(orbit) * ((anglePrograde(orbit) - ejectionAngle + twoπ) % twoπ) / twoπ
+public func timeIntervalUntilEjectionAngle(orbit: Orbit, ejectionAngle: Double) -> NSTimeInterval? {
+    if let period = period(orbit) {
+        if let anglePrograde = anglePrograde(orbit) {
+            return period * ((anglePrograde - ejectionAngle + twoπ) % twoπ) / twoπ
+        }
+    }
+    return nil
 }
 
 // "Theta"
-public func thetaAtTime(orbit: Orbit, time: NSTimeInterval) -> Double {
-    return (orbit.longitudeOfAscendingNode + orbit.argumentOfPeriapsis + trueAnomalyAtTime(orbit, time)) % twoπ
+public func thetaAtTime(orbit: Orbit, time: NSTimeInterval) -> Double? {
+    if let trueAnomaly = trueAnomalyAtTime(orbit, time) {
+        return (orbit.longitudeOfAscendingNode + orbit.argumentOfPeriapsis + trueAnomaly) % twoπ
+    }
+    return nil
 }
 
-public func theta(orbit: Orbit) -> Double {
+public func theta(orbit: Orbit) -> Double? {
     return thetaAtTime(orbit, UniversalTime.currentUniversalTime.timeIntervalSinceEpoch)
 }

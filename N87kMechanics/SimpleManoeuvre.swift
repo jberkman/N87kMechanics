@@ -33,30 +33,30 @@ private let observerContexts = [ apoapsisContext, periapsisContext ]
 public class SimpleManoeuvre: NSObject {
 
     // Inputs
-    public dynamic var sourceBody: Body? { didSet { recalculate() } }
+    public dynamic var sourceBody: Body? { didSet { recalculateDeltaV() } }
     public dynamic var sourceOrbit: Orbit? {
         didSet {
             for context in observerContexts {
                 oldValue?.removeObserver(self, context: context)
                 sourceOrbit?.addObserver(self, context: context)
             }
-            recalculate()
+            recalculateDeltaV()
         }
     }
 
-    public dynamic var targetBody: Body? { didSet { recalculate() } }
+    public dynamic var targetBody: Body? { didSet { recalculateDeltaV() } }
     public dynamic var targetOrbit: Orbit? {
         didSet {
             for context in observerContexts {
                 oldValue?.removeObserver(self, context: context)
                 targetOrbit?.addObserver(self, context: context)
             }
-            recalculate()
+            recalculateDeltaV()
         }
     }
 
-    public dynamic var aerobrake: Bool = true { didSet { recalculate() } }
-    public dynamic var initialTime: NSTimeInterval = 0 { didSet { recalculate() } }
+    public dynamic var aerobrake: Bool = true { didSet { recalculateDeltaV() } }
+    public dynamic var initialTime: NSTimeInterval = 0 { didSet { recalculateDeltaV() } }
 
     // Outputs
     public dynamic var deltaV = 0.0
@@ -72,10 +72,6 @@ public class SimpleManoeuvre: NSObject {
         }
     }
 
-    private func recalculate() {
-        updateDeltaV(self)
-    }
-
 }
 
 extension SimpleManoeuvre: Manoeuvre {
@@ -86,29 +82,34 @@ extension SimpleManoeuvre: Manoeuvre {
         return NSSet(array: [ "sourceBody", "targetBody" ])
     }
 
-    public dynamic var ejectionAngle: Double { return N87kMechanics.ejectionAngle(self) }
+    public dynamic var ejectionAngle: NSNumber? { return N87kMechanics.ejectionAngle(self) }
 
     @objc public class func keyPathsForValuesAffectingEjectionAngle() -> NSSet {
         return keyPathsForValuesAffectingEjectionVelocity()
     }
 
-    public dynamic var currentPhaseAngle: Double { return N87kMechanics.currentPhaseAngle(self) }
-    public dynamic var ejectionVelocity: Double { return N87kMechanics.ejectionVelocity(self) }
+    public dynamic var currentPhaseAngle: NSNumber? { return N87kMechanics.currentPhaseAngle(self) }
+    public dynamic var ejectionVelocity: NSNumber? { return N87kMechanics.ejectionVelocity(self) }
 
     @objc public class func keyPathsForValuesAffectingEjectionVelocity() -> NSSet {
         return NSSet(array: [ "sourceBody.radius", "sourceOrbit.periapsis", "sourceBody.sphereOfInfluence", "sourceBody.orbit.gravitationalParameter", "deltaV" ])
     }
 
-    public func ejectionDeltaVWithOrbit(orbit: Orbit) -> Double { return N87kMechanics.ejectionDeltaVWithOrbit(self, orbit) }
-    public func deltaVWithOrbit(orbit: Orbit) -> Double { return N87kMechanics.deltaVWithOrbit(self, orbit) }
+    public func ejectionDeltaVWithOrbit(orbit: Orbit) -> NSNumber? { return N87kMechanics.ejectionDeltaVWithOrbit(self, orbit) }
+    public func deltaVWithOrbit(orbit: Orbit) -> NSNumber? { return N87kMechanics.deltaVWithOrbit(self, orbit) }
 
-    public override var description: String { return N87kMechanics.description(self) }
+    public var descriptiveText: String { return N87kMechanics.descriptiveText(self) }
 
     public override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
         switch context {
-        case &apoapsisContext.context, &periapsisContext.context: recalculate()
+        case &apoapsisContext.context, &periapsisContext.context: recalculateDeltaV()
         default: super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
         }
     }
+
+    public func createLaunchOrbit() {
+    }
+
+    public func recalculateDeltaV() { N87kMechanics.recalculateDeltaV(self) }
 
 }

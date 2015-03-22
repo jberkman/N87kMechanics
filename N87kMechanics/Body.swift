@@ -40,31 +40,40 @@ public protocol Body: NSObjectProtocol {
     var rotationPeriod: NSTimeInterval { get }
     var sphereOfInfluence: Double { get }
 
-    var tidallyLocked: Bool { get }
+    var tidallyLocked: NSNumber? { get }
 
-    var orbit: Orbit! { get }
+    var orbit: Orbit? { get }
     var secondaryBodies: NSSet { get }
     func addSecondaryBody(body: Body)
 
-    var parkingOrbitHeight: Double { get }
-    var synchronousOrbitHeight: Double { get }
-    var semiSynchronousOrbitHeight: Double { get }
+    var parkingOrbitHeight: NSNumber? { get }
+    var synchronousOrbitHeight: NSNumber? { get }
+    var semiSynchronousOrbitHeight: NSNumber? { get }
 }
 
-public func tidallyLocked(body: Body) -> Bool {
-    return body.rotationPeriod == body.orbit.period
+public func tidallyLocked(body: Body) -> Bool? {
+    if let period = body.orbit?.period {
+        return body.rotationPeriod == period
+    }
+    return nil
 }
 
 public func parkingOrbitHeight(body: Body) -> Double {
     return 10_000 + 10_000 * round(body.maxAtmosphere / 10_000)
 }
 
-public func synchronousOrbitHeight(body: Body) -> Double {
-    return pow(body.orbit.gravitationalParameter * pow(body.rotationPeriod / twoπ, 2), 1.0 / 3) - body.radius
+public func synchronousOrbitHeight(body: Body) -> Double? {
+    if let µ = body.orbit?.gravitationalParameter {
+        return pow(µ * pow(body.rotationPeriod / twoπ, 2), 1.0 / 3) - body.radius
+    }
+    return nil
 }
 
-public func semiSynchronousOrbitHeight(body: Body) -> Double {
-    return pow(body.orbit.gravitationalParameter * pow(body.rotationPeriod / (2 * twoπ), 2), 1.0 / 3) - body.radius
+public func semiSynchronousOrbitHeight(body: Body) -> Double? {
+    if let µ = body.orbit?.gravitationalParameter {
+        return pow(µ * pow(body.rotationPeriod / (2 * twoπ), 2), 1.0 / 3) - body.radius
+    }
+    return nil
 }
 
 public func generate(body: Body) -> GeneratorOf<Body> {

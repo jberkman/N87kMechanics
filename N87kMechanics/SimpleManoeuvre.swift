@@ -86,21 +86,21 @@ extension SimpleManoeuvre: Manoeuvre {
         return NSSet(array: [ "sourceBody", "targetBody" ])
     }
 
-    public dynamic var ejectionAngle: Double { return N87kMechanics.ejectionAngle(self) }
+    public dynamic var ejectionAngle: NSNumber? { return N87kMechanics.ejectionAngle(self) }
 
     @objc public class func keyPathsForValuesAffectingEjectionAngle() -> NSSet {
         return keyPathsForValuesAffectingEjectionVelocity()
     }
 
-    public dynamic var currentPhaseAngle: Double { return N87kMechanics.currentPhaseAngle(self) }
-    public dynamic var ejectionVelocity: Double { return N87kMechanics.ejectionVelocity(self) }
+    public dynamic var currentPhaseAngle: NSNumber? { return N87kMechanics.currentPhaseAngle(self) }
+    public dynamic var ejectionVelocity: NSNumber? { return N87kMechanics.ejectionVelocity(self) }
 
     @objc public class func keyPathsForValuesAffectingEjectionVelocity() -> NSSet {
         return NSSet(array: [ "sourceBody.radius", "sourceOrbit.periapsis", "sourceBody.sphereOfInfluence", "sourceBody.orbit.gravitationalParameter", "deltaV" ])
     }
 
-    public func ejectionDeltaVWithOrbit(orbit: Orbit) -> Double { return N87kMechanics.ejectionDeltaVWithOrbit(self, orbit) }
-    public func deltaVWithOrbit(orbit: Orbit) -> Double { return N87kMechanics.deltaVWithOrbit(self, orbit) }
+    public func ejectionDeltaVWithOrbit(orbit: Orbit) -> NSNumber? { return N87kMechanics.ejectionDeltaVWithOrbit(self, orbit) }
+    public func deltaVWithOrbit(orbit: Orbit) -> NSNumber? { return N87kMechanics.deltaVWithOrbit(self, orbit) }
 
     public override var description: String { return N87kMechanics.description(self) }
 

@@ -29,8 +29,8 @@ import Foundation
 public enum OrbitalParameter {
     case Apoapsis, Periapsis
 
-    public func valueWithOrbit(orbit: Orbit) -> Double {
-        return self == .Apoapsis ? orbit.apoapsis : orbit.periapsis
+    public func valueWithOrbit(orbit: Orbit) -> Double? {
+        return self == .Apoapsis ? orbit.apoapsis?.doubleValue : orbit.periapsis?.doubleValue
     }
 
     public func setValue(value: Double, orbit: Orbit) {
@@ -40,8 +40,8 @@ public enum OrbitalParameter {
         }
     }
 
-    public func otherValueWithOrbit(orbit: Orbit) -> Double {
-        return self == .Apoapsis ? orbit.periapsis : orbit.apoapsis
+    public func otherValueWithOrbit(orbit: Orbit) -> Double? {
+        return self == .Apoapsis ? orbit.periapsis?.doubleValue : orbit.apoapsis?.doubleValue
     }
 
     public func setOtherValue(value: Double, orbit: Orbit) {

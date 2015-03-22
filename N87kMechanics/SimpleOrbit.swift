@@ -48,19 +48,19 @@ public class SimpleOrbit: NSObject {
 extension SimpleOrbit: Orbit {
 
     // Outputs
-    public var isStable: Bool? { return N87kMechanics.isStable(self) }
+    public var isStable: NSNumber? { return N87kMechanics.isStable(self) }
 
     // Periapsis
     public dynamic var periapsis: NSNumber? {
         get { return N87kMechanics.periapsis(self) }
-        set { setPeriapsis(self, newValue!) }
+        set { setPeriapsis(self, newValue!.doubleValue) }
     }
 
     @objc public class func keyPathsForValuesAffectingPeriapsis() -> NSSet {
         return NSSet(array: [ "eccentricity", "primaryBody.radius", "semiMajorAxis" ])
     }
 
-    public dynamic var timeOfPeriapsisPassage: NSTimeInterval {
+    public dynamic var timeOfPeriapsisPassage: NSNumber? {
         return N87kMechanics.timeOfPeriapsisPassage(self)
     }
 
@@ -68,7 +68,7 @@ extension SimpleOrbit: Orbit {
         return keyPathsForValuesAffectingMeanMotion().setByAddingObject("meanAnomalyAtEpoch")
     }
 
-    public dynamic var timeToPeriapsis: NSTimeInterval {
+    public dynamic var timeToPeriapsis: NSNumber? {
         return N87kMechanics.timeToPeriapsis(self)
     }
 
@@ -77,16 +77,16 @@ extension SimpleOrbit: Orbit {
     }
 
     // Apoapsis
-    public dynamic var apoapsis: Double {
+    public dynamic var apoapsis: NSNumber? {
         get { return N87kMechanics.apoapsis(self) }
-        set { setApoapsis(self, newValue) }
+        set { setApoapsis(self, newValue!.doubleValue) }
     }
 
     @objc public class func keyPathsForValuesAffectingApoapsis() -> NSSet {
         return keyPathsForValuesAffectingPeriapsis()
     }
 
-    public dynamic var timeToApoapsis: NSTimeInterval {
+    public dynamic var timeToApoapsis: NSNumber? {
         return N87kMechanics.timeToApoapsis(self)
     }
 
@@ -95,7 +95,7 @@ extension SimpleOrbit: Orbit {
     }
 
     // Mean Motion / Period
-    public dynamic var meanMotion: Double {
+    public dynamic var meanMotion: NSNumber? {
         return N87kMechanics.meanMotion(self)
     }
 
@@ -103,7 +103,7 @@ extension SimpleOrbit: Orbit {
         return NSSet(array: [ "primaryBody.orbit.gravitationalParameter", "semiMajorAxis" ])
     }
 
-    public dynamic var period: NSTimeInterval {
+    public dynamic var period: NSNumber? {
         return N87kMechanics.period(self)
     }
 
@@ -112,11 +112,11 @@ extension SimpleOrbit: Orbit {
     }
 
     // Mean Anomaly
-    public func meanAnomalyAtTime(time: NSTimeInterval) -> Double {
+    public func meanAnomalyAtTime(time: NSTimeInterval) -> NSNumber? {
         return N87kMechanics.meanAnomalyAtTime(self, time)
     }
 
-    public var meanAnomaly: Double {
+    public var meanAnomaly: NSNumber? {
         return N87kMechanics.meanAnomaly(self)
     }
 
@@ -124,16 +124,16 @@ extension SimpleOrbit: Orbit {
         return keyPathsForValuesAffectingMeanMotion().setByAddingObjectsFromArray([ "epoch", "meanAnomalyAtEpoch" ])
     }
 
-    public func meanAnomalyWithTrueAnomaly(trueAnomaly: Double) -> Double {
+    public func meanAnomalyWithTrueAnomaly(trueAnomaly: Double) -> NSNumber? {
         return N87kMechanics.meanAnomalyWithTrueAnomaly(self, trueAnomaly)
     }
 
     // True Anomaly
-    public func trueAnomalyAtTime(time: NSTimeInterval) -> Double {
+    public func trueAnomalyAtTime(time: NSTimeInterval) -> NSNumber? {
         return N87kMechanics.trueAnomalyAtTime(self, time)
     }
 
-    public dynamic var trueAnomaly: Double {
+    public dynamic var trueAnomaly: NSNumber? {
         return N87kMechanics.trueAnomaly(self)
     }
 
@@ -142,11 +142,11 @@ extension SimpleOrbit: Orbit {
     }
 
     // Eccentric Anomaly
-    public func eccentricAnomalyWithTrueAnomaly(trueAnomaly: Double) -> Double {
+    public func eccentricAnomalyWithTrueAnomaly(trueAnomaly: Double) -> NSNumber? {
         return N87kMechanics.eccentricAnomalyWithTrueAnomaly(self, trueAnomaly)
     }
 
-    public var eccentricAnomaly: Double {
+    public var eccentricAnomaly: NSNumber? {
         return N87kMechanics.eccentricAnomaly(self)
     }
 
@@ -155,11 +155,11 @@ extension SimpleOrbit: Orbit {
     }
 
     // Radius
-    public func radiusWithTrueAnomaly(trueAnomaly: Double) -> Double {
+    public func radiusWithTrueAnomaly(trueAnomaly: Double) -> NSNumber? {
         return N87kMechanics.radiusWithTrueAnomaly(self, trueAnomaly)
     }
 
-    public dynamic var radius: Double {
+    public dynamic var radius: NSNumber? {
         return N87kMechanics.radius(self)
     }
 
@@ -168,11 +168,11 @@ extension SimpleOrbit: Orbit {
     }
 
     // Velocity
-    public func relativeVelocityWithRadius(radius: Double) -> Double {
+    public func relativeVelocityWithRadius(radius: Double) -> NSNumber? {
         return N87kMechanics.relativeVelocityWithRadius(self, radius)
     }
 
-    public dynamic var relativeVelocity: Double {
+    public dynamic var relativeVelocity: NSNumber? {
         return N87kMechanics.relativeVelocity(self)
     }
 
@@ -181,7 +181,7 @@ extension SimpleOrbit: Orbit {
     }
 
     // Transfers
-    public dynamic var anglePrograde: Double {
+    public dynamic var anglePrograde: NSNumber? {
         return N87kMechanics.anglePrograde(self)
     }
 
@@ -189,15 +189,15 @@ extension SimpleOrbit: Orbit {
         return keyPathsForValuesAffectingTrueAnomaly().setByAddingObjectsFromArray([ "argumentOfPeriapsis", "primaryBody.orbit.argumentOfPeriapsis", "primaryBody.orbit.longitudeOfAscendingNode", "primaryBody.orbit.trueAnomaly", "longitudeOfAscendingNode" ])
     }
 
-    public func timeIntervalUntilEjectionAngle(ejectionAngle: Double) -> NSTimeInterval {
+    public func timeIntervalUntilEjectionAngle(ejectionAngle: Double) -> NSNumber? {
         return N87kMechanics.timeIntervalUntilEjectionAngle(self, ejectionAngle)
     }
 
-    public func thetaAtTime(time: NSTimeInterval) -> Double {
+    public func thetaAtTime(time: NSTimeInterval) -> NSNumber? {
         return N87kMechanics.thetaAtTime(self, time)
     }
 
-    public dynamic var theta: Double {
+    public dynamic var theta: NSNumber? {
         return N87kMechanics.theta(self)
     }
 

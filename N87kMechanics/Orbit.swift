@@ -28,7 +28,7 @@ import Foundation
 
 private let twoπ = 2 * M_PI
 
-//@objc
+@objc
 public protocol Orbit: Observable {
 
     // Inputs
@@ -47,40 +47,41 @@ public protocol Orbit: Observable {
     var timeToTransition2: NSTimeInterval { get set }
 
     // inout
-    var periapsis: Double { get set }
-    var apoapsis: Double { get set }
+    var periapsis: NSNumber? { get set }
+    var apoapsis: NSNumber? { get set }
 
     // Output
-    var isStable: Bool? { get }
+    var isStable: NSNumber? { get }
 
-    var timeOfPeriapsisPassage: NSTimeInterval { get }
-    var timeToPeriapsis: NSTimeInterval { get }
-    var timeToApoapsis: NSTimeInterval { get }
+    var timeOfPeriapsisPassage: NSNumber? { get }
+    var timeToPeriapsis: NSNumber? { get }
+    var timeToApoapsis: NSNumber? { get }
 
-    var meanMotion: Double { get }
-    var period: Double { get }
+    var meanMotion: NSNumber? { get }
+    var period: NSNumber? { get }
 
-    var meanAnomaly: Double { get }
-    func meanAnomalyAtTime(time: NSTimeInterval) -> Double
-    func meanAnomalyWithTrueAnomaly(trueAnomaly: Double) -> Double
+    var meanAnomaly: NSNumber? { get }
+    func meanAnomalyAtTime(time: NSTimeInterval) -> NSNumber?
+    func meanAnomalyWithTrueAnomaly(trueAnomaly: Double) -> NSNumber?
 
-    var trueAnomaly: Double { get }
-    func trueAnomalyAtTime(time: NSTimeInterval) -> Double
+    var trueAnomaly: NSNumber? { get }
+    func trueAnomalyAtTime(time: NSTimeInterval) -> NSNumber?
 
-    var eccentricAnomaly: Double { get }
-    func eccentricAnomalyWithTrueAnomaly(trueAnomaly: Double) -> Double
+    var eccentricAnomaly: NSNumber? { get }
+    func eccentricAnomalyWithTrueAnomaly(trueAnomaly: Double) -> NSNumber?
 
-    var radius: Double { get }
-    func radiusWithTrueAnomaly(trueAnomaly: Double) -> Double
+    var radius: NSNumber? { get }
+    func radiusWithTrueAnomaly(trueAnomaly: Double) -> NSNumber?
 
-    var relativeVelocity: Double { get }
-    func relativeVelocityWithRadius(radius: Double) -> Double
+    var relativeVelocity: NSNumber? { get }
+    func relativeVelocityWithRadius(radius: Double) -> NSNumber?
 
-    var anglePrograde: Double { get }
-    func timeIntervalUntilEjectionAngle(ejectionAngle: Double) -> NSTimeInterval
+    var anglePrograde: NSNumber? { get }
+    func timeIntervalUntilEjectionAngle(ejectionAngle: Double) -> NSNumber?
 
-    var theta: Double { get }
-    func thetaAtTime(time: NSTimeInterval) -> Double
+    var theta: NSNumber? { get }
+    func thetaAtTime(time: NSTimeInterval) -> NSNumber?
+
 }
 
 public func copy(dest: Orbit, source: Orbit) {
@@ -101,7 +102,11 @@ public func copy(dest: Orbit, source: Orbit) {
 
 public func isStable(orbit: Orbit) -> Bool? {
     if let primaryBody = orbit.primaryBody {
-        return orbit.periapsis > primaryBody.maxAtmosphere && orbit.apoapsis < primaryBody.sphereOfInfluence
+        if let apoapsis = orbit.apoapsis?.doubleValue {
+            if let periapsis = orbit.periapsis?.doubleValue {
+                return periapsis > primaryBody.maxAtmosphere && apoapsis < primaryBody.sphereOfInfluence
+            }
+        }
     }
     return nil
 }
@@ -166,7 +171,7 @@ public func timeToApoapsis(orbit: Orbit) -> NSTimeInterval? {
 
 // Mean Motion / Period
 public func meanMotion(orbit: Orbit) -> Double? {
-    if let µ = orbit.primaryBody?.orbit.gravitationalParameter {
+    if let µ = orbit.primaryBody?.orbit?.gravitationalParameter {
         return sqrt(µ / pow(orbit.semiMajorAxis, 3))
     }
     return nil
@@ -236,7 +241,7 @@ public func radius(orbit: Orbit) -> Double? {
 
 // Velocity
 public func relativeVelocityWithRadius(orbit: Orbit, radius: Double) -> Double? {
-    if let µ = orbit.primaryBody?.orbit.gravitationalParameter {
+    if let µ = orbit.primaryBody?.orbit?.gravitationalParameter {
         return sqrt(µ * (2 / radius - 1 / orbit.semiMajorAxis))
     }
     return nil
@@ -252,10 +257,12 @@ public func relativeVelocity(orbit: Orbit) -> Double? {
 // Transfers
 public func anglePrograde(orbit: Orbit) -> Double? {
     if let primaryOrbit = orbit.primaryBody?.orbit {
-        if let trueAnomaly = trueAnomaly(orbit) {
-            let a = (primaryOrbit.trueAnomaly + primaryOrbit.longitudeOfAscendingNode + primaryOrbit.argumentOfPeriapsis + M_PI_2) % twoπ
-            let b = (trueAnomaly + orbit.longitudeOfAscendingNode + orbit.argumentOfPeriapsis) % twoπ
-            return (a - b + twoπ) % twoπ
+        if let primaryTrueAnomaly = primaryOrbit.trueAnomaly?.doubleValue {
+            if let trueAnomaly = trueAnomaly(orbit) {
+                let a = (primaryTrueAnomaly + primaryOrbit.longitudeOfAscendingNode + primaryOrbit.argumentOfPeriapsis + M_PI_2) % twoπ
+                let b = (trueAnomaly + orbit.longitudeOfAscendingNode + orbit.argumentOfPeriapsis) % twoπ
+                return (a - b + twoπ) % twoπ
+            }
         }
     }
     return nil

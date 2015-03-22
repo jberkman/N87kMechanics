@@ -33,30 +33,30 @@ private let observerContexts = [ apoapsisContext, periapsisContext ]
 public class SimpleManoeuvre: NSObject {
 
     // Inputs
-    public dynamic var sourceBody: Body? { didSet { recalculate() } }
+    public dynamic var sourceBody: Body? { didSet { recalculateDeltaV() } }
     public dynamic var sourceOrbit: Orbit? {
         didSet {
             for context in observerContexts {
                 oldValue?.removeObserver(self, context: context)
                 sourceOrbit?.addObserver(self, context: context)
             }
-            recalculate()
+            recalculateDeltaV()
         }
     }
 
-    public dynamic var targetBody: Body? { didSet { recalculate() } }
+    public dynamic var targetBody: Body? { didSet { recalculateDeltaV() } }
     public dynamic var targetOrbit: Orbit? {
         didSet {
             for context in observerContexts {
                 oldValue?.removeObserver(self, context: context)
                 targetOrbit?.addObserver(self, context: context)
             }
-            recalculate()
+            recalculateDeltaV()
         }
     }
 
-    public dynamic var aerobrake: Bool = true { didSet { recalculate() } }
-    public dynamic var initialTime: NSTimeInterval = 0 { didSet { recalculate() } }
+    public dynamic var aerobrake: Bool = true { didSet { recalculateDeltaV() } }
+    public dynamic var initialTime: NSTimeInterval = 0 { didSet { recalculateDeltaV() } }
 
     // Outputs
     public dynamic var deltaV = 0.0
@@ -70,10 +70,6 @@ public class SimpleManoeuvre: NSObject {
             sourceOrbit?.removeObserver(self, context: context)
             targetOrbit?.removeObserver(self, context: context)
         }
-    }
-
-    private func recalculate() {
-        updateDeltaV(self)
     }
 
 }
@@ -102,13 +98,18 @@ extension SimpleManoeuvre: Manoeuvre {
     public func ejectionDeltaVWithOrbit(orbit: Orbit) -> NSNumber? { return N87kMechanics.ejectionDeltaVWithOrbit(self, orbit) }
     public func deltaVWithOrbit(orbit: Orbit) -> NSNumber? { return N87kMechanics.deltaVWithOrbit(self, orbit) }
 
-    public override var description: String { return N87kMechanics.description(self) }
+    public var descriptiveText: String { return N87kMechanics.descriptiveText(self) }
 
     public override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
         switch context {
-        case &apoapsisContext.context, &periapsisContext.context: recalculate()
+        case &apoapsisContext.context, &periapsisContext.context: recalculateDeltaV()
         default: super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
         }
     }
+
+    public func createLaunchOrbit() {
+    }
+
+    public func recalculateDeltaV() { N87kMechanics.recalculateDeltaV(self) }
 
 }

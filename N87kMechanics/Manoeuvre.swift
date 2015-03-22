@@ -67,14 +67,17 @@ public protocol Manoeuvre: Observable {
     func ejectionDeltaVWithOrbit(orbit: Orbit) -> NSNumber?
     func deltaVWithOrbit(orbit: Orbit) -> NSNumber?
 
-    var description: String { get }
+    var descriptiveText: String { get }
+
+    func recalculateDeltaV()
+    func createLaunchOrbit()
 }
 
 public func isTransfer(manoeuvre: Manoeuvre) -> Bool {
     return manoeuvre.sourceBody !== manoeuvre.targetBody
 }
 
-public func description(manoeuvre: Manoeuvre) -> String {
+public func descriptiveText(manoeuvre: Manoeuvre) -> String {
     let sourceBodyName = manoeuvre.sourceBody?.name ?? "Unknown body"
     let targetBodyName = manoeuvre.targetBody?.name ?? "Unknown body"
     switch (manoeuvre.sourceOrbit, manoeuvre.targetOrbit) {
@@ -147,7 +150,6 @@ public func deltaVWithOrbit(manoeuvre: Manoeuvre, orbit: Orbit) -> Double? {
 }
 
 private func computeTransfer(manoeuvre: Manoeuvre, t: Double) -> (Window, Double)? {
-
     if let sourceOrbit = manoeuvre.sourceBody?.orbit {
         if let targetOrbit = manoeuvre.targetBody?.orbit {
             if let µ = sourceOrbit.primaryBody?.orbit?.gravitationalParameter {
@@ -224,34 +226,35 @@ public func deltaV(sourceOrbit: Orbit, targetOrbit: Orbit) -> Double? {
     return nil
 }
 
-private func updateDeltaVWithLaunchManoeuvre(manoeuvre: Manoeuvre) {
-    let targetOrbit = manoeuvre.targetOrbit!
-    if let targetBody = targetOrbit.primaryBody {
-        if targetBody.maxAtmosphere > 0 {
-            if targetOrbit.eccentricity == 0 && targetOrbit.apoapsis == targetBody.parkingOrbitHeight {
-                switch targetBody.name {
-                case "Duna": manoeuvre.deltaV = 1_300
-                case "Eve": manoeuvre.deltaV = 12_000
-                case "Kerbin": manoeuvre.deltaV = 4_550
-                case "Laythe": manoeuvre.deltaV = 3_200
-                default: break
+private func recalculateDeltaVWithLaunchManoeuvre(manoeuvre: Manoeuvre) {
+    if let targetBody = manoeuvre.targetBody {
+        if let targetOrbit = manoeuvre.targetOrbit {
+            if targetBody.maxAtmosphere > 0 {
+                if targetOrbit.eccentricity == 0 && targetOrbit.apoapsis == targetBody.parkingOrbitHeight {
+                    switch targetBody.name {
+                    case "Duna": manoeuvre.deltaV = 1_300
+                    case "Eve": manoeuvre.deltaV = 12_000
+                    case "Kerbin": manoeuvre.deltaV = 4_550
+                    case "Laythe": manoeuvre.deltaV = 3_200
+                    default: break
+                    }
                 }
-            }
-        } else {
-            let transfer = SimpleOrbit()
-            copy(transfer, targetOrbit)
-            transfer.apoapsis = targetOrbit.periapsis
-            transfer.periapsis = targetBody.radius
-            if let relativeVelocity = transfer.relativeVelocityWithRadius(targetBody.radius)?.doubleValue {
-                if let deltaV = deltaV(transfer, targetOrbit) {
-                    manoeuvre.deltaV = relativeVelocity + deltaV - twoπ * targetBody.radius / targetBody.rotationPeriod
+            } else {
+                let transfer = SimpleOrbit()
+                copy(transfer, targetOrbit)
+                transfer.apoapsis = targetOrbit.periapsis
+                transfer.periapsis = targetBody.radius
+                if let relativeVelocity = transfer.relativeVelocityWithRadius(targetBody.radius)?.doubleValue {
+                    if let deltaV = deltaV(transfer, targetOrbit) {
+                        manoeuvre.deltaV = relativeVelocity + deltaV - twoπ * targetBody.radius / targetBody.rotationPeriod
+                    }
                 }
             }
         }
     }
 }
 
-private func updateDeltaVWithOrbitalChangeManouevre(manoeuvre: Manoeuvre) {
+private func recalculateDeltaVWithOrbitalChangeManouevre(manoeuvre: Manoeuvre) {
     if let sourceOrbit = manoeuvre.sourceOrbit {
         if let targetOrbit = manoeuvre.targetOrbit {
             if let deltaV = deltaV(sourceOrbit, targetOrbit) {
@@ -261,44 +264,44 @@ private func updateDeltaVWithOrbitalChangeManouevre(manoeuvre: Manoeuvre) {
     }
 }
 
-private func updateDeltaVWithTransferManoeuvre(manoeuvre: Manoeuvre) {
-    if let sourceOrbit = manoeuvre.sourceOrbit {
-        if let sourcePeriod = sourceOrbit.primaryBody?.orbit?.period?.doubleValue {
-            if let targetPeriod = manoeuvre.targetOrbit?.primaryBody?.orbit?.period?.doubleValue {
-                if targetPeriod == 0 {
-                    return
+private func recalculateDeltaVWithTransferManoeuvre(manoeuvre: Manoeuvre) {
+    if let sourcePeriod = manoeuvre.sourceBody?.orbit?.period?.doubleValue {
+        if let targetPeriod = manoeuvre.targetBody?.orbit?.period?.doubleValue {
+            if targetPeriod == 0 {
+                return
+            }
+
+            let quarterPeriod = targetPeriod / 4
+            let startPositive = sourcePeriod < targetPeriod
+            let t0 = max(manoeuvre.initialTime, UniversalTime.currentUniversalTime.timeIntervalSinceEpoch)
+            println("t0: \(t0)")
+            if var lower = deltaTPair(manoeuvre, t0) {
+                let day = 60.0 * 60 * 6
+
+                while startPositive ? lower.1 < 0 : lower.1 > 0 {
+                    lower = deltaTPair(manoeuvre, lower.0 + quarterPeriod)!
                 }
+                var upper = deltaTPair(manoeuvre, lower.0 + quarterPeriod)!
 
-                let quarterPeriod = targetPeriod / 4
-                let startPositive = sourcePeriod < targetPeriod
-                let t0 = max(manoeuvre.initialTime, UniversalTime.currentUniversalTime.timeIntervalSinceEpoch)
-                println("t0: \(t0)")
-                if var lower = deltaTPair(manoeuvre, t0) {
-                    let day = 60.0 * 60 * 6
+                while startPositive ? upper.1 > 0 : upper.1 < 0 {
+                    lower = upper
+                    upper = deltaTPair(manoeuvre, lower.0 + quarterPeriod)!
+                }
+                var pair = (lower, upper)
 
-                    while startPositive ? lower.1 < 0 : lower.1 > 0 {
-                        lower = deltaTPair(manoeuvre, lower.0 + quarterPeriod)!
-                    }
-                    var upper = deltaTPair(manoeuvre, lower.0 + quarterPeriod)!
+                var iterations = 0
+                while min(abs(pair.0.1), abs(pair.1.1)) > 1 {
+                    iterations++
+                    pair = bisect(manoeuvre, pair)!
+                    println("pair: \(pair.0.0 / day), \(pair.1.0 / day)")
+                }
+                println("transfer iterations: \(iterations)")
 
-                    while startPositive ? upper.1 > 0 : upper.1 < 0 {
-                        lower = upper
-                        upper = deltaTPair(manoeuvre, lower.0 + quarterPeriod)!
-                    }
-                    var pair = (lower, upper)
-
-                    var iterations = 0
-                    while min(abs(pair.0.1), abs(pair.1.1)) > 1 {
-                        iterations++
-                        pair = bisect(manoeuvre, pair)!
-                        println("pair: \(pair.0.0 / day), \(pair.1.0 / day)")
-                    }
-                    println("transfer iterations: \(iterations)")
-
-                    let window = computeTransfer(manoeuvre, abs(pair.0.1) < abs(pair.1.1) ? pair.0.0 : pair.1.0)!.0
-                    manoeuvre.transferTime = window.time
-                    manoeuvre.travelTime = window.travelTime
-                    manoeuvre.transferPhaseAngle = window.phaseAngle
+                let window = computeTransfer(manoeuvre, abs(pair.0.1) < abs(pair.1.1) ? pair.0.0 : pair.1.0)!.0
+                manoeuvre.transferTime = window.time
+                manoeuvre.travelTime = window.travelTime
+                manoeuvre.transferPhaseAngle = window.phaseAngle
+                if let sourceOrbit = manoeuvre.sourceOrbit {
                     if let deltaV = ejectionDeltaVWithOrbit(manoeuvre, sourceOrbit) {
                         manoeuvre.deltaV = deltaV
                     }
@@ -308,7 +311,7 @@ private func updateDeltaVWithTransferManoeuvre(manoeuvre: Manoeuvre) {
     }
 }
 
-private func updateDeltaVWithLandingManoeuvre(manoeuvre: Manoeuvre) {
+private func recalculateDeltaVWithLandingManoeuvre(manoeuvre: Manoeuvre) {
     let sourceOrbit = manoeuvre.sourceOrbit!
     if let sourceBody = sourceOrbit.primaryBody {
         let transfer = SimpleOrbit()
@@ -316,30 +319,30 @@ private func updateDeltaVWithLandingManoeuvre(manoeuvre: Manoeuvre) {
         let radius = sourceOrbit.primaryBody!.radius
         transfer.apoapsis = sourceOrbit.periapsis
         transfer.periapsis = sourceBody.radius
-        if var deltaV = deltaV(sourceOrbit, transfer) {
-            deltaV -= twoπ * sourceBody.radius / sourceBody.rotationPeriod
+        if let deltaV = deltaV(sourceOrbit, transfer) {
+            let surfaceVelocity = twoπ * sourceBody.radius / sourceBody.rotationPeriod
             if manoeuvre.aerobrake {
-                if let relativeVelocity = transfer.relativeVelocityWithRadius(sourceBody.radius)?.doubleValue {
-                    manoeuvre.deltaV = deltaV + relativeVelocity
-                }
-            } else {
-                manoeuvre.deltaV = deltaV
+                manoeuvre.deltaV = deltaV - surfaceVelocity
+            } else if let relativeVelocity = transfer.relativeVelocityWithRadius(sourceBody.radius)?.doubleValue {
+                manoeuvre.deltaV = deltaV + relativeVelocity - surfaceVelocity
             }
         }
     }
 }
 
-public func updateDeltaV(manoeuvre: Manoeuvre) {
-    switch (manoeuvre.sourceOrbit, manoeuvre.targetOrbit) {
-    case (nil, .Some):
-        updateDeltaVWithLaunchManoeuvre(manoeuvre)
-    case (.Some(let sourceOrbit), .Some(let targetOrbit)) where sourceOrbit.primaryBody?.bodyID == targetOrbit.primaryBody?.bodyID:
-        updateDeltaVWithOrbitalChangeManouevre(manoeuvre)
-    case (.Some, .Some):
-        updateDeltaVWithTransferManoeuvre(manoeuvre)
-    case (.Some, nil):
-        updateDeltaVWithLandingManoeuvre(manoeuvre)
-    default:
-        break
+public func recalculateDeltaV(manoeuvre: Manoeuvre) {
+    if manoeuvre.isTransfer {
+        recalculateDeltaVWithTransferManoeuvre(manoeuvre)
+    } else {
+        switch (manoeuvre.sourceOrbit, manoeuvre.targetOrbit) {
+        case (nil, .Some):
+            recalculateDeltaVWithLaunchManoeuvre(manoeuvre)
+        case (.Some, .Some):
+            recalculateDeltaVWithOrbitalChangeManouevre(manoeuvre)
+        case (.Some, nil):
+            recalculateDeltaVWithLandingManoeuvre(manoeuvre)
+        default:
+            break
+        }
     }
 }

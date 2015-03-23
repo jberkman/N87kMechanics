@@ -16,6 +16,9 @@
 		1688990E1AB5719500C6B325 /* SimpleOrbit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1688990D1AB5719500C6B325 /* SimpleOrbit.swift */; };
 		168899141AB5795B00C6B325 /* SimpleBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168899131AB5795B00C6B325 /* SimpleBody.swift */; };
 		168899161AB57EA000C6B325 /* SimpleManoeuvre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168899151AB57EA000C6B325 /* SimpleManoeuvre.swift */; };
+		16DCB8831ABF8E7900384AAE /* KerbolSystem.plist in Resources */ = {isa = PBXBuildFile; fileRef = 16DCB8821ABF8E7900384AAE /* KerbolSystem.plist */; };
+		16DCB8851ABF8E8400384AAE /* KebolSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16DCB8841ABF8E8400384AAE /* KebolSystem.swift */; };
+		16DCB8861ABF90BC00384AAE /* HohmannTransferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160620FE1AA8DC0800A5A5D1 /* HohmannTransferTests.swift */; };
 		16ECA1FD1AB2CE2200FF9762 /* ObserverContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16ECA1FC1AB2CE2200FF9762 /* ObserverContext.swift */; };
 		16ECA1FF1AB3EE1100FF9762 /* UniversalTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16ECA1FE1AB3EE1100FF9762 /* UniversalTime.swift */; };
 		16ECA20D1AB5580900FF9762 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16ECA20C1AB5580900FF9762 /* Observable.swift */; };
@@ -47,6 +50,8 @@
 		1688990D1AB5719500C6B325 /* SimpleOrbit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleOrbit.swift; sourceTree = "<group>"; };
 		168899131AB5795B00C6B325 /* SimpleBody.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleBody.swift; sourceTree = "<group>"; };
 		168899151AB57EA000C6B325 /* SimpleManoeuvre.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleManoeuvre.swift; sourceTree = "<group>"; };
+		16DCB8821ABF8E7900384AAE /* KerbolSystem.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = KerbolSystem.plist; sourceTree = "<group>"; };
+		16DCB8841ABF8E8400384AAE /* KebolSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KebolSystem.swift; sourceTree = "<group>"; };
 		16ECA1FC1AB2CE2200FF9762 /* ObserverContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObserverContext.swift; sourceTree = "<group>"; };
 		16ECA1FE1AB3EE1100FF9762 /* UniversalTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UniversalTime.swift; sourceTree = "<group>"; };
 		16ECA20C1AB5580900FF9762 /* Observable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
@@ -121,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				160620FE1AA8DC0800A5A5D1 /* HohmannTransferTests.swift */,
+				16DCB8841ABF8E8400384AAE /* KebolSystem.swift */,
 				160620DB1AA8D3C600A5A5D1 /* Supporting Files */,
 			);
 			path = N87kMechanicsTests;
@@ -129,6 +135,7 @@
 		160620DB1AA8D3C600A5A5D1 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				16DCB8821ABF8E7900384AAE /* KerbolSystem.plist */,
 				160620DC1AA8D3C600A5A5D1 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -231,6 +238,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16DCB8831ABF8E7900384AAE /* KerbolSystem.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,6 +267,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16DCB8861ABF90BC00384AAE /* HohmannTransferTests.swift in Sources */,
+				16DCB8851ABF8E8400384AAE /* KebolSystem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -26,6 +26,7 @@
 
 import Foundation
 
+private let day = 60.0 * 60 * 6
 private let twoπ = 2 * M_PI
 
 @objc
@@ -99,8 +100,8 @@ private struct Window {
 
 public func ejectionVelocity(manoeuvre: Manoeuvre) -> Double? {
     if let sourceBody = manoeuvre.sourceBody {
-        if let periapsis = manoeuvre.sourceOrbit?.periapsis?.doubleValue {
-            if let µ = sourceBody.orbit?.gravitationalParameter {
+        if let µ = sourceBody.orbit?.gravitationalParameter {
+            if let periapsis = manoeuvre.sourceOrbit?.periapsis?.doubleValue {
                 let r1 = sourceBody.radius + periapsis
                 let r2 = sourceBody.sphereOfInfluence
                 return sqrt((r1 * (r2 * pow(manoeuvre.deltaV, 2) - 2 * µ) + 2 * r2 * µ) / (r1 * r2))
@@ -129,7 +130,7 @@ public func ejectionAngle(manoeuvre: Manoeuvre) -> Double? {
 
 public func currentPhaseAngle(manoeuvre: Manoeuvre) -> Double? {
     if let targetTheta = manoeuvre.targetBody?.orbit?.theta?.doubleValue {
-        if let sourceTheta = manoeuvre.targetBody?.orbit?.theta?.doubleValue {
+        if let sourceTheta = manoeuvre.sourceBody?.orbit?.theta?.doubleValue {
             return (targetTheta - sourceTheta) % twoπ
         }
     }
@@ -152,17 +153,24 @@ public func deltaVWithOrbit(manoeuvre: Manoeuvre, orbit: Orbit) -> Double? {
 private func computeTransfer(manoeuvre: Manoeuvre, t: Double) -> (Window, Double)? {
     if let sourceOrbit = manoeuvre.sourceBody?.orbit {
         if let targetOrbit = manoeuvre.targetBody?.orbit {
-            if let µ = sourceOrbit.primaryBody?.orbit?.gravitationalParameter {
-                if let sourceTrueAnomaly = sourceOrbit.trueAnomalyAtTime(t)?.doubleValue {
+
+            if let sourceTrueAnomaly = sourceOrbit.trueAnomalyAtTime(t)?.doubleValue {
+                if let targetTrueAnomaly = targetOrbit.trueAnomalyAtTime(t)?.doubleValue {
+
                     if let sourceTheta = sourceOrbit.thetaAtTime(t)?.doubleValue {
-                        if let targetTrueAnomaly = targetOrbit.trueAnomalyAtTime(t)?.doubleValue {
-                            if let targetTheta = targetOrbit.thetaAtTime(t)?.doubleValue {
-                                if let r1 = sourceOrbit.radiusWithTrueAnomaly(sourceTrueAnomaly)?.doubleValue {
-                                    if let M1 = targetOrbit.meanAnomalyAtTime(t)?.doubleValue {
-                                        let targetTrueAnomaly2 = (targetTrueAnomaly + sourceTheta - targetTheta + M_PI) % twoπ
-                                        if let r2 = targetOrbit.radiusWithTrueAnomaly(targetTrueAnomaly2)?.doubleValue {
-                                            if let M2 = targetOrbit.meanAnomalyWithTrueAnomaly(targetTrueAnomaly2)?.doubleValue {
+                        if let targetTheta = targetOrbit.thetaAtTime(t)?.doubleValue {
+
+                            if let r1 = sourceOrbit.radiusWithTrueAnomaly(sourceTrueAnomaly)?.doubleValue {
+                                if let M1 = targetOrbit.meanAnomalyAtTime(t)?.doubleValue {
+
+                                    let targetTrueAnomaly2 = (targetTrueAnomaly + sourceTheta - targetTheta + M_PI) % twoπ
+
+                                    if let r2 = targetOrbit.radiusWithTrueAnomaly(targetTrueAnomaly2)?.doubleValue {
+                                        if let M2 = targetOrbit.meanAnomalyWithTrueAnomaly(targetTrueAnomaly2)?.doubleValue {
+
+                                            if let µ = sourceOrbit.primaryBody?.orbit?.gravitationalParameter {
                                                 if let meanMotion = targetOrbit.meanMotion?.doubleValue {
+
                                                     let t2 = ((M2 - M1 + twoπ) % twoπ) / meanMotion
                                                     let rtx = (r1 + r2) / 2
 
@@ -274,18 +282,21 @@ private func recalculateDeltaVWithTransferManoeuvre(manoeuvre: Manoeuvre) {
             let quarterPeriod = targetPeriod / 4
             let startPositive = sourcePeriod < targetPeriod
             let t0 = max(manoeuvre.initialTime, UniversalTime.currentUniversalTime.timeIntervalSinceEpoch)
-            println("t0: \(t0)")
+            println("t0: \(t0) +: \(startPositive)")
             if var lower = deltaTPair(manoeuvre, t0) {
-                let day = 60.0 * 60 * 6
 
+//                println("lower 1: \(lower.0 / day), \(lower.1 / day)")
                 while startPositive ? lower.1 < 0 : lower.1 > 0 {
                     lower = deltaTPair(manoeuvre, lower.0 + quarterPeriod)!
+//                    println("lower 2: \(lower.0 / day), \(lower.1 / day)")
                 }
                 var upper = deltaTPair(manoeuvre, lower.0 + quarterPeriod)!
+//                println("upper 1: \(upper.0 / day), \(upper.1 / day)")
 
                 while startPositive ? upper.1 > 0 : upper.1 < 0 {
                     lower = upper
                     upper = deltaTPair(manoeuvre, lower.0 + quarterPeriod)!
+//                    println("lower: \(lower.0 / day), \(lower.1 / day) / upper: \(upper.0 / day), \(upper.1 / day)")
                 }
                 var pair = (lower, upper)
 
@@ -293,7 +304,7 @@ private func recalculateDeltaVWithTransferManoeuvre(manoeuvre: Manoeuvre) {
                 while min(abs(pair.0.1), abs(pair.1.1)) > 1 {
                     iterations++
                     pair = bisect(manoeuvre, pair)!
-                    println("pair: \(pair.0.0 / day), \(pair.1.0 / day)")
+//                    println("pair: \(pair.0.0 / day), \(pair.1.0 / day)")
                 }
                 println("transfer iterations: \(iterations)")
 

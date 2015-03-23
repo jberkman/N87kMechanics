@@ -161,9 +161,11 @@ public func setApoapsis(orbit: Orbit, apoapsis: Double) {
 }
 
 public func timeToApoapsis(orbit: Orbit) -> NSTimeInterval? {
-    if let meanMotion = meanMotion(orbit) {
-        if let meanAnomaly = meanAnomaly(orbit) {
-            return ((3 * M_PI - meanAnomaly) % twoπ) / meanMotion
+    if orbit.eccentricity <= 1 {
+        if let meanMotion = meanMotion(orbit) {
+            if let meanAnomaly = meanAnomaly(orbit) {
+                return ((3 * M_PI - meanAnomaly) % twoπ) / meanMotion
+            }
         }
     }
     return nil

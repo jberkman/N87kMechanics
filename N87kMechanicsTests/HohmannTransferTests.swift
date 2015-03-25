@@ -27,20 +27,27 @@
 import N87kMechanics
 import XCTest
 
+let day = 60.0 * 60 * 6
+let year = 426.0
+
 class HohmannTransferTests: XCTestCase {
 
     var bodies = [Body]()
     var transfer: Manoeuvre!
+
+    var eve: Body!
     var kerbin: Body!
     var duna: Body!
-    var eve: Body!
+    var dres: Body!
 
     override func setUp() {
         super.setUp()
         bodies = KerbolSystem.bodies
+
         eve = bodies.filter { $0.name == "Eve" }.first!
         kerbin = bodies.filter { $0.name == "Kerbin" }.first!
         duna = bodies.filter { $0.name == "Duna" }.first!
+        dres = bodies.filter { $0.name == "Dres" }.first!
 
         transfer = SimpleManoeuvre()
         transfer.sourceBody = kerbin
@@ -89,7 +96,6 @@ class HohmannTransferTests: XCTestCase {
 
         transfer.recalculateDeltaV()
 
-        let day = 60.0 * 60 * 6
         println("day: \(transfer.transferTime / day)")
         println("days: \(transfer.travelTime / day)")
         println(transfer.ejectionVelocity)
@@ -107,13 +113,28 @@ class HohmannTransferTests: XCTestCase {
 
         transfer.recalculateDeltaV()
 
-        let day = 60.0 * 60 * 6
-        let year = 426.0
         println("day: \(Int((transfer.transferTime / day) / year)) \((transfer.transferTime / day) % year)")
         println("days: \(transfer.travelTime / day)")
         XCTAssertEqualWithAccuracy(transfer.transferTime / day, year + 121, 1)
         XCTAssertEqualWithAccuracy(transfer.travelTime / day, 170, 1)
         XCTAssertEqualWithAccuracy(transfer.transferPhaseAngle * M_PI / 180, 360 - 36.4, 1)
         XCTAssertEqualWithAccuracy(transfer.deltaV, 1012, 10)
+    }
+
+    func testFirstDresTransfer() {
+        transfer.targetBody = dres
+        transfer.targetOrbit = SimpleOrbit()
+        transfer.targetOrbit!.primaryBody = dres
+        transfer.targetOrbit!.semiMajorAxis = dres.parkingOrbitHeight!.doubleValue + dres.radius
+
+        transfer.recalculateDeltaV()
+
+        println("day: \(Int((transfer.transferTime / day) / year)) \((transfer.transferTime / day) % year)")
+        println("days: \(transfer.travelTime / day)")
+
+        XCTAssertEqualWithAccuracy(transfer.transferTime / day, 388, 1)
+        XCTAssertEqualWithAccuracy(transfer.travelTime / day - year, 100, 1)
+        XCTAssertEqualWithAccuracy(transfer.transferPhaseAngle * 180 / M_PI, 91, 1)
+        XCTAssertEqualWithAccuracy(transfer.deltaV, 1104, 10)
     }
 }

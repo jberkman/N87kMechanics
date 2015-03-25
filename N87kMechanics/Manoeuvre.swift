@@ -279,10 +279,10 @@ private func recalculateDeltaVWithTransferManoeuvre(manoeuvre: Manoeuvre) {
                 return
             }
 
-            let quarterPeriod = targetPeriod / 4
+            let quarterPeriod = min(sourcePeriod, targetPeriod) / 4
             let startPositive = sourcePeriod < targetPeriod
             let t0 = max(manoeuvre.initialTime, UniversalTime.currentUniversalTime.timeIntervalSinceEpoch)
-            println("t0: \(t0) +: \(startPositive)")
+//            println("t0: \(t0) +: \(startPositive)")
             if var lower = deltaTPair(manoeuvre, t0) {
 
 //                println("lower 1: \(lower.0 / day), \(lower.1 / day)")

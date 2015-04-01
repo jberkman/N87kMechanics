@@ -66,6 +66,7 @@ public protocol Orbit: Observable {
 
     var trueAnomaly: NSNumber? { get }
     func trueAnomalyAtTime(time: NSTimeInterval) -> NSNumber?
+    func trueAnomalyWithTrueLongitude(trueLongitude: Double) -> Double
 
     var eccentricAnomaly: NSNumber? { get }
     func eccentricAnomalyWithTrueAnomaly(trueAnomaly: Double) -> NSNumber?
@@ -79,8 +80,8 @@ public protocol Orbit: Observable {
     var anglePrograde: NSNumber? { get }
     func timeIntervalUntilEjectionAngle(ejectionAngle: Double) -> NSNumber?
 
-    var theta: NSNumber? { get }
-    func thetaAtTime(time: NSTimeInterval) -> NSNumber?
+    var trueLongitude: NSNumber? { get }
+    func trueLongitudeWithTrueAnomaly(trueAnomaly: Double) -> Double
 
 }
 
@@ -102,13 +103,17 @@ public func copy(dest: Orbit, source: Orbit) {
 
 public func isStable(orbit: Orbit) -> Bool? {
     if let primaryBody = orbit.primaryBody {
-        if let apoapsis = orbit.apoapsis?.doubleValue {
-            if let periapsis = orbit.periapsis?.doubleValue {
+        if let apoapsis = apoapsis(orbit) {
+            if let periapsis = periapsis(orbit) {
                 return periapsis > primaryBody.maxAtmosphere && apoapsis < primaryBody.sphereOfInfluence
             }
         }
     }
     return nil
+}
+
+public func eccentricityWithApoapsis(apoapsis: Double, #periapsis: Double, #radius: Double) -> Double {
+    return abs(apoapsis - periapsis) / (apoapsis + periapsis + 2 * radius)
 }
 
 public func periapsis(orbit: Orbit) -> Double? {
@@ -121,7 +126,7 @@ public func periapsis(orbit: Orbit) -> Double? {
 public func setPeriapsis(orbit: Orbit, periapsis: Double) {
     if let radius = orbit.primaryBody?.radius {
         if let oldApoapsis = apoapsis(orbit) {
-            orbit.eccentricity = abs(oldApoapsis - periapsis) / (oldApoapsis + periapsis + 2 * radius)
+            orbit.eccentricity = eccentricityWithApoapsis(oldApoapsis, periapsis: periapsis, radius: radius)
             orbit.semiMajorAxis = (oldApoapsis + periapsis) / 2 + radius
         }
     }
@@ -154,7 +159,7 @@ public func apoapsis(orbit: Orbit) -> Double? {
 public func setApoapsis(orbit: Orbit, apoapsis: Double) {
     if let radius = orbit.primaryBody?.radius {
         if let oldPeriapsis = periapsis(orbit) {
-            orbit.eccentricity = abs(apoapsis - oldPeriapsis) / (apoapsis + oldPeriapsis + 2 * radius)
+            orbit.eccentricity = eccentricityWithApoapsis(apoapsis, periapsis: oldPeriapsis, radius: radius)
             orbit.semiMajorAxis = (apoapsis + oldPeriapsis) / 2 + radius
         }
     }
@@ -215,6 +220,10 @@ public func trueAnomaly(orbit: Orbit) -> Double? {
     return trueAnomalyAtTime(orbit, UniversalTime.currentUniversalTime.timeIntervalSinceEpoch)
 }
 
+public func trueAnomalyWithTrueLongitude(orbit: Orbit, trueLongitude: Double) -> Double {
+    return (twoπ + trueLongitude - orbit.argumentOfPeriapsis - orbit.longitudeOfAscendingNode) % twoπ
+}
+
 // Eccentric Anomaly
 public func eccentricAnomalyWithTrueAnomaly(orbit: Orbit, trueAnomaly: Double) -> Double {
     let cosv = cos(trueAnomaly)
@@ -258,14 +267,16 @@ public func relativeVelocity(orbit: Orbit) -> Double? {
 
 // Transfers
 public func anglePrograde(orbit: Orbit) -> Double? {
-    if let primaryOrbit = orbit.primaryBody?.orbit {
-        if let primaryTrueAnomaly = primaryOrbit.trueAnomaly?.doubleValue {
-            if let trueAnomaly = trueAnomaly(orbit) {
-                let a = (primaryTrueAnomaly + primaryOrbit.longitudeOfAscendingNode + primaryOrbit.argumentOfPeriapsis + M_PI_2) % twoπ
-                let b = (trueAnomaly + orbit.longitudeOfAscendingNode + orbit.argumentOfPeriapsis) % twoπ
-                return (a - b + twoπ) % twoπ
+    if let primaryBody = orbit.primaryBody {
+        if let primaryBodyOrbit = primaryBody.orbit {
+            if let parentAngle = anglePrograde(primaryBodyOrbit) {
+                if let trueLongitude = trueLongitude(orbit) {
+                    return (trueLongitude - parentAngle + M_PI_2 + twoπ) % twoπ
+                }
             }
         }
+    } else {
+        return 0
     }
     return nil
 }
@@ -279,14 +290,14 @@ public func timeIntervalUntilEjectionAngle(orbit: Orbit, ejectionAngle: Double) 
     return nil
 }
 
-// "Theta"
-public func thetaAtTime(orbit: Orbit, time: NSTimeInterval) -> Double? {
-    if let trueAnomaly = trueAnomalyAtTime(orbit, time) {
-        return (orbit.longitudeOfAscendingNode + orbit.argumentOfPeriapsis + trueAnomaly) % twoπ
-    }
-    return nil
+// True Longitude
+public func trueLongitudeWithTrueAnomaly(orbit: Orbit, trueAnomaly: Double) -> Double {
+    return (trueAnomaly + orbit.longitudeOfAscendingNode + orbit.argumentOfPeriapsis) % twoπ
 }
 
-public func theta(orbit: Orbit) -> Double? {
-    return thetaAtTime(orbit, UniversalTime.currentUniversalTime.timeIntervalSinceEpoch)
+public func trueLongitude(orbit: Orbit) -> Double? {
+    if let trueAnomaly = trueAnomaly(orbit) {
+        return trueLongitudeWithTrueAnomaly(orbit, trueAnomaly)
+    }
+    return nil
 }

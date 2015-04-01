@@ -14,32 +14,32 @@
 		<key>orbit</key>
 		<dict>
 			<key>argumentOfPeriapsis</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>eccentricity</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>gravitationalParameter</key>
 			<real>1.17233279483249e+18</real>
 			<key>inclination</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>longitudeOfAscendingNode</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>meanAnomalyAtEpoch</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>semiMajorAxis</key>
-			<real>0.0</real>
+			<real>0</real>
 		</dict>
 		<key>radius</key>
 		<real>261600000</real>
 		<key>rotationPeriod</key>
 		<real>432000</real>
 		<key>sphereOfInfluence</key>
-		<real>0.0</real>
+		<real>0</real>
 	</dict>
 	<dict>
 		<key>atmosphereContainsOxygen</key>
 		<true/>
 		<key>mass</key>
-		<real>5.2915793000000003e+22</real>
+		<real>5.2915793e+22</real>
 		<key>maxAtmosphere</key>
 		<real>70000</real>
 		<key>name</key>
@@ -47,24 +47,24 @@
 		<key>orbit</key>
 		<dict>
 			<key>argumentOfPeriapsis</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>eccentricity</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>gravitationalParameter</key>
 			<real>3531600000000</real>
 			<key>inclination</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>longitudeOfAscendingNode</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>meanAnomalyAtEpoch</key>
-			<real>3.1400001049041699</real>
+			<real>3.14000010490417</real>
 			<key>semiMajorAxis</key>
 			<real>13599840256</real>
 		</dict>
 		<key>radius</key>
 		<real>600000</real>
 		<key>rotationPeriod</key>
-		<real>21599.912014540099</real>
+		<real>21599.9120145401</real>
 		<key>sphereOfInfluence</key>
 		<real>84159286.4796305</real>
 	</dict>
@@ -72,23 +72,23 @@
 		<key>atmosphereContainsOxygen</key>
 		<false/>
 		<key>mass</key>
-		<real>9.7600236000000003e+20</real>
+		<real>9.7600236e+20</real>
 		<key>maxAtmosphere</key>
-		<real>0.0</real>
+		<real>0</real>
 		<key>name</key>
 		<string>Mun</string>
 		<key>orbit</key>
 		<dict>
 			<key>argumentOfPeriapsis</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>eccentricity</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>gravitationalParameter</key>
-			<real>65138397520.780701</real>
+			<real>65138397520.7807</real>
 			<key>inclination</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>longitudeOfAscendingNode</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>meanAnomalyAtEpoch</key>
 			<real>1.70000004768372</real>
 			<key>semiMajorAxis</key>
@@ -97,9 +97,9 @@
 		<key>radius</key>
 		<real>200000</real>
 		<key>rotationPeriod</key>
-		<real>138984.37657447599</real>
+		<real>138984.376574476</real>
 		<key>sphereOfInfluence</key>
-		<real>2429559.1165647502</real>
+		<real>2429559.11656475</real>
 	</dict>
 	<dict>
 		<key>atmosphereContainsOxygen</key>
@@ -107,23 +107,23 @@
 		<key>mass</key>
 		<real>2.6457897e+19</real>
 		<key>maxAtmosphere</key>
-		<real>0.0</real>
+		<real>0</real>
 		<key>name</key>
 		<string>Minmus</string>
 		<key>orbit</key>
 		<dict>
 			<key>argumentOfPeriapsis</key>
-			<real>0.66322511575784515</real>
+			<real>0.6632251157578452</real>
 			<key>eccentricity</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>gravitationalParameter</key>
 			<real>1765800026.31247</real>
 			<key>inclination</key>
 			<real>6</real>
 			<key>longitudeOfAscendingNode</key>
-			<real>1.3613568165555769</real>
+			<real>1.361356816555577</real>
 			<key>meanAnomalyAtEpoch</key>
-			<real>0.89999997615814198</real>
+			<real>0.899999976158142</real>
 			<key>semiMajorAxis</key>
 			<real>47000000</real>
 		</dict>
@@ -132,13 +132,13 @@
 		<key>rotationPeriod</key>
 		<real>40400</real>
 		<key>sphereOfInfluence</key>
-		<real>2247428.3879022999</real>
+		<real>2247428.3879023</real>
 	</dict>
 	<dict>
 		<key>atmosphereContainsOxygen</key>
 		<false/>
 		<key>mass</key>
-		<real>2.5263616999999999e+21</real>
+		<real>2.5263617e+21</real>
 		<key>maxAtmosphere</key>
 		<real>14000</real>
 		<key>name</key>
@@ -146,17 +146,17 @@
 		<key>orbit</key>
 		<dict>
 			<key>argumentOfPeriapsis</key>
-			<real>0.26179938779914941</real>
+			<real>0.2617993877991494</real>
 			<key>eccentricity</key>
-			<real>0.20000000298023199</real>
+			<real>0.200000002980232</real>
 			<key>gravitationalParameter</key>
 			<real>168609378654.509</real>
 			<key>inclination</key>
 			<real>7</real>
 			<key>longitudeOfAscendingNode</key>
-			<real>1.2217304763960306</real>
+			<real>1.221730476396031</real>
 			<key>meanAnomalyAtEpoch</key>
-			<real>3.1400001049041699</real>
+			<real>3.14000010490417</real>
 			<key>semiMajorAxis</key>
 			<real>5263138304</real>
 		</dict>
@@ -165,7 +165,7 @@
 		<key>rotationPeriod</key>
 		<real>1210000</real>
 		<key>sphereOfInfluence</key>
-		<real>9646663.0233280994</real>
+		<real>9646663.023328099</real>
 	</dict>
 	<dict>
 		<key>atmosphereContainsOxygen</key>
@@ -179,17 +179,17 @@
 		<key>orbit</key>
 		<dict>
 			<key>argumentOfPeriapsis</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>eccentricity</key>
-			<real>0.0099999997764825804</real>
+			<real>0.00999999977648258</real>
 			<key>gravitationalParameter</key>
-			<real>8171730229210.8701</real>
+			<real>8171730229210.87</real>
 			<key>inclination</key>
-			<real>2.0999999046325701</real>
+			<real>2.09999990463257</real>
 			<key>longitudeOfAscendingNode</key>
-			<real>0.26179938779914941</real>
+			<real>0.2617993877991494</real>
 			<key>meanAnomalyAtEpoch</key>
-			<real>3.1400001049041699</real>
+			<real>3.14000010490417</real>
 			<key>semiMajorAxis</key>
 			<real>9832684544</real>
 		</dict>
@@ -198,13 +198,13 @@
 		<key>rotationPeriod</key>
 		<real>80500</real>
 		<key>sphereOfInfluence</key>
-		<real>85109364.738244101</real>
+		<real>85109364.7382441</real>
 	</dict>
 	<dict>
 		<key>atmosphereContainsOxygen</key>
 		<false/>
 		<key>mass</key>
-		<real>4.5154812000000001e+21</real>
+		<real>4.5154812e+21</real>
 		<key>maxAtmosphere</key>
 		<real>50000</real>
 		<key>name</key>
@@ -212,17 +212,17 @@
 		<key>orbit</key>
 		<dict>
 			<key>argumentOfPeriapsis</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>eccentricity</key>
-			<real>0.050999999046325697</real>
+			<real>0.0509999990463257</real>
 			<key>gravitationalParameter</key>
-			<real>301363211975.09802</real>
+			<real>301363211975.098</real>
 			<key>inclination</key>
-			<real>0.059999998658895499</real>
+			<real>0.0599999986588955</real>
 			<key>longitudeOfAscendingNode</key>
-			<real>2.3649211364523164</real>
+			<real>2.364921136452316</real>
 			<key>meanAnomalyAtEpoch</key>
-			<real>3.1400001049041699</real>
+			<real>3.14000010490417</real>
 			<key>semiMajorAxis</key>
 			<real>20726155264</real>
 		</dict>
@@ -231,29 +231,29 @@
 		<key>rotationPeriod</key>
 		<real>65517.859375</real>
 		<key>sphereOfInfluence</key>
-		<real>47921949.369737998</real>
+		<real>47921949.369738</real>
 	</dict>
 	<dict>
 		<key>atmosphereContainsOxygen</key>
 		<false/>
 		<key>mass</key>
-		<real>2.7821948999999999e+20</real>
+		<real>2.7821949e+20</real>
 		<key>maxAtmosphere</key>
-		<real>0.0</real>
+		<real>0</real>
 		<key>name</key>
 		<string>Ike</string>
 		<key>orbit</key>
 		<dict>
 			<key>argumentOfPeriapsis</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>eccentricity</key>
-			<real>0.029999999329447701</real>
+			<real>0.0299999993294477</real>
 			<key>gravitationalParameter</key>
-			<real>18568368573.144001</real>
+			<real>18568368573.144</real>
 			<key>inclination</key>
-			<real>0.20000000298023199</real>
+			<real>0.200000002980232</real>
 			<key>longitudeOfAscendingNode</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>meanAnomalyAtEpoch</key>
 			<real>1.70000004768372</real>
 			<key>semiMajorAxis</key>
@@ -264,13 +264,13 @@
 		<key>rotationPeriod</key>
 		<real>65517.8621348081</real>
 		<key>sphereOfInfluence</key>
-		<real>1049598.9393116201</real>
+		<real>1049598.93931162</real>
 	</dict>
 	<dict>
 		<key>atmosphereContainsOxygen</key>
 		<false/>
 		<key>mass</key>
-		<real>4.2332634999999997e+24</real>
+		<real>4.2332635e+24</real>
 		<key>maxAtmosphere</key>
 		<real>200000</real>
 		<key>name</key>
@@ -278,17 +278,17 @@
 		<key>orbit</key>
 		<dict>
 			<key>argumentOfPeriapsis</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>eccentricity</key>
-			<real>0.050000000745058101</real>
+			<real>0.0500000007450581</real>
 			<key>gravitationalParameter</key>
 			<real>282528004209995</real>
 			<key>inclination</key>
 			<real>1.30400002002716</real>
 			<key>longitudeOfAscendingNode</key>
-			<real>0.90757121103705141</real>
+			<real>0.9075712110370514</real>
 			<key>meanAnomalyAtEpoch</key>
-			<real>0.10000000149011599</real>
+			<real>0.100000001490116</real>
 			<key>semiMajorAxis</key>
 			<real>68773560320</real>
 		</dict>
@@ -303,7 +303,7 @@
 		<key>atmosphereContainsOxygen</key>
 		<true/>
 		<key>mass</key>
-		<real>2.9397662999999999e+22</real>
+		<real>2.9397663e+22</real>
 		<key>maxAtmosphere</key>
 		<real>50000</real>
 		<key>name</key>
@@ -311,17 +311,17 @@
 		<key>orbit</key>
 		<dict>
 			<key>argumentOfPeriapsis</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>eccentricity</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>gravitationalParameter</key>
-			<real>1962000029236.0801</real>
+			<real>1962000029236.08</real>
 			<key>inclination</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>longitudeOfAscendingNode</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>meanAnomalyAtEpoch</key>
-			<real>3.1400001049041699</real>
+			<real>3.14000010490417</real>
 			<key>semiMajorAxis</key>
 			<real>27184000</real>
 		</dict>
@@ -330,31 +330,31 @@
 		<key>rotationPeriod</key>
 		<real>52980.8790593796</real>
 		<key>sphereOfInfluence</key>
-		<real>3723645.8111330201</real>
+		<real>3723645.81113302</real>
 	</dict>
 	<dict>
 		<key>atmosphereContainsOxygen</key>
 		<false/>
 		<key>mass</key>
-		<real>3.1088028000000001e+21</real>
+		<real>3.1088028e+21</real>
 		<key>maxAtmosphere</key>
-		<real>0.0</real>
+		<real>0</real>
 		<key>name</key>
 		<string>Vall</string>
 		<key>orbit</key>
 		<dict>
 			<key>argumentOfPeriapsis</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>eccentricity</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>gravitationalParameter</key>
-			<real>207481499473.75101</real>
+			<real>207481499473.751</real>
 			<key>inclination</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>longitudeOfAscendingNode</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>meanAnomalyAtEpoch</key>
-			<real>0.89999997615814198</real>
+			<real>0.899999976158142</real>
 			<key>semiMajorAxis</key>
 			<real>43152000</real>
 		</dict>
@@ -363,7 +363,7 @@
 		<key>rotationPeriod</key>
 		<real>105962.088893924</real>
 		<key>sphereOfInfluence</key>
-		<real>2406401.4447940402</real>
+		<real>2406401.44479404</real>
 	</dict>
 	<dict>
 		<key>atmosphereContainsOxygen</key>
@@ -371,30 +371,30 @@
 		<key>mass</key>
 		<real>3.7261536e+19</real>
 		<key>maxAtmosphere</key>
-		<real>0.0</real>
+		<real>0</real>
 		<key>name</key>
 		<string>Bop</string>
 		<key>orbit</key>
 		<dict>
 			<key>argumentOfPeriapsis</key>
-			<real>0.43633231299858238</real>
+			<real>0.4363323129985824</real>
 			<key>eccentricity</key>
 			<real>0.234999999403954</real>
 			<key>gravitationalParameter</key>
-			<real>2486834944.4149098</real>
+			<real>2486834944.41491</real>
 			<key>inclination</key>
 			<real>15</real>
 			<key>longitudeOfAscendingNode</key>
-			<real>0.17453292519943295</real>
+			<real>0.1745329251994329</real>
 			<key>meanAnomalyAtEpoch</key>
-			<real>0.89999997615814198</real>
+			<real>0.899999976158142</real>
 			<key>semiMajorAxis</key>
 			<real>128500000</real>
 		</dict>
 		<key>radius</key>
 		<real>65000</real>
 		<key>rotationPeriod</key>
-		<real>544507.42851665395</real>
+		<real>544507.4285166539</real>
 		<key>sphereOfInfluence</key>
 		<real>1221060.86284253</real>
 	</dict>
@@ -402,25 +402,25 @@
 		<key>atmosphereContainsOxygen</key>
 		<false/>
 		<key>mass</key>
-		<real>4.2332635000000003e+22</real>
+		<real>4.2332635e+22</real>
 		<key>maxAtmosphere</key>
-		<real>0.0</real>
+		<real>0</real>
 		<key>name</key>
 		<string>Tylo</string>
 		<key>orbit</key>
 		<dict>
 			<key>argumentOfPeriapsis</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>eccentricity</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>gravitationalParameter</key>
-			<real>2825280042099.9502</real>
+			<real>2825280042099.95</real>
 			<key>inclination</key>
-			<real>0.025000000372528999</real>
+			<real>0.025000000372529</real>
 			<key>longitudeOfAscendingNode</key>
-			<real>0.0</real>
+			<real>0</real>
 			<key>meanAnomalyAtEpoch</key>
-			<real>3.1400001049041699</real>
+			<real>3.14000010490417</real>
 			<key>semiMajorAxis</key>
 			<real>68500000</real>
 		</dict>
@@ -429,7 +429,7 @@
 		<key>rotationPeriod</key>
 		<real>211926.35802123</real>
 		<key>sphereOfInfluence</key>
-		<real>10856518.368358601</real>
+		<real>10856518.3683586</real>
 	</dict>
 	<dict>
 		<key>atmosphereContainsOxygen</key>
@@ -437,23 +437,23 @@
 		<key>mass</key>
 		<real>1.2420512e+17</real>
 		<key>maxAtmosphere</key>
-		<real>0.0</real>
+		<real>0</real>
 		<key>name</key>
 		<string>Gilly</string>
 		<key>orbit</key>
 		<dict>
 			<key>argumentOfPeriapsis</key>
-			<real>0.17453292519943295</real>
+			<real>0.1745329251994329</real>
 			<key>eccentricity</key>
-			<real>0.55000001192092896</real>
+			<real>0.550000011920929</real>
 			<key>gravitationalParameter</key>
-			<real>8289449.8147163503</real>
+			<real>8289449.81471635</real>
 			<key>inclination</key>
 			<real>12</real>
 			<key>longitudeOfAscendingNode</key>
-			<real>1.3962634015954636</real>
+			<real>1.396263401595464</real>
 			<key>meanAnomalyAtEpoch</key>
-			<real>0.89999997615814198</real>
+			<real>0.899999976158142</real>
 			<key>semiMajorAxis</key>
 			<real>31500000</real>
 		</dict>
@@ -470,13 +470,13 @@
 		<key>mass</key>
 		<real>1.0813636e+19</real>
 		<key>maxAtmosphere</key>
-		<real>0.0</real>
+		<real>0</real>
 		<key>name</key>
 		<string>Pol</string>
 		<key>orbit</key>
 		<dict>
 			<key>argumentOfPeriapsis</key>
-			<real>0.26179938779914941</real>
+			<real>0.2617993877991494</real>
 			<key>eccentricity</key>
 			<real>0.17085</real>
 			<key>gravitationalParameter</key>
@@ -484,24 +484,24 @@
 			<key>inclination</key>
 			<real>4.25</real>
 			<key>longitudeOfAscendingNode</key>
-			<real>0.034906585039886591</real>
+			<real>0.03490658503988659</real>
 			<key>meanAnomalyAtEpoch</key>
-			<real>0.89999997615814198</real>
+			<real>0.899999976158142</real>
 			<key>semiMajorAxis</key>
 			<real>179890000</real>
 		</dict>
 		<key>radius</key>
 		<real>44000</real>
 		<key>rotationPeriod</key>
-		<real>901902.62353117298</real>
+		<real>901902.623531173</real>
 		<key>sphereOfInfluence</key>
-		<real>1042138.8923017801</real>
+		<real>1042138.89230178</real>
 	</dict>
 	<dict>
 		<key>atmosphereContainsOxygen</key>
 		<false/>
 		<key>mass</key>
-		<real>3.2191321999999998e+20</real>
+		<real>3.2191322e+20</real>
 		<key>maxAtmosphere</key>
 		<real>14000</real>
 		<key>name</key>
@@ -509,17 +509,17 @@
 		<key>orbit</key>
 		<dict>
 			<key>argumentOfPeriapsis</key>
-			<real>1.5707963267948966</real>
+			<real>1.570796326794897</real>
 			<key>eccentricity</key>
-			<real>0.14499999999999999</real>
+			<real>0.145</real>
 			<key>gravitationalParameter</key>
 			<real>21484488600</real>
 			<key>inclination</key>
 			<real>5</real>
 			<key>longitudeOfAscendingNode</key>
-			<real>4.8869219055841224</real>
+			<real>4.886921905584122</real>
 			<key>meanAnomalyAtEpoch</key>
-			<real>3.1400001049041699</real>
+			<real>3.14000010490417</real>
 			<key>semiMajorAxis</key>
 			<real>40839348203</real>
 		</dict>
@@ -528,7 +528,7 @@
 		<key>rotationPeriod</key>
 		<real>34800</real>
 		<key>sphereOfInfluence</key>
-		<real>32832839.576776199</real>
+		<real>32832839.5767762</real>
 	</dict>
 	<dict>
 		<key>atmosphereContainsOxygen</key>
@@ -542,17 +542,17 @@
 		<key>orbit</key>
 		<dict>
 			<key>argumentOfPeriapsis</key>
-			<real>4.5378560551852569</real>
+			<real>4.537856055185257</real>
 			<key>eccentricity</key>
-			<real>0.26000000000000001</real>
+			<real>0.26</real>
 			<key>gravitationalParameter</key>
-			<real>74410814527.049606</real>
+			<real>74410814527.04961</real>
 			<key>inclination</key>
-			<real>6.1500000000000004</real>
+			<real>6.15</real>
 			<key>longitudeOfAscendingNode</key>
-			<real>0.87266462599716477</real>
+			<real>0.8726646259971648</real>
 			<key>meanAnomalyAtEpoch</key>
-			<real>3.1400001049041699</real>
+			<real>3.14000010490417</real>
 			<key>semiMajorAxis</key>
 			<real>90118820000</real>
 		</dict>
@@ -561,7 +561,7 @@
 		<key>rotationPeriod</key>
 		<real>19460</real>
 		<key>sphereOfInfluence</key>
-		<real>119082941.64781199</real>
+		<real>119082941.647812</real>
 	</dict>
 </array>
 </plist>

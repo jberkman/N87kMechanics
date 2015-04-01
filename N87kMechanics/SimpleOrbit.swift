@@ -141,6 +141,10 @@ extension SimpleOrbit: Orbit {
         return keyPathsForValuesAffectingMeanAnomaly().setByAddingObjectsFromArray([ "eccentricity" ])
     }
 
+    public func trueAnomalyWithTrueLongitude(trueLongitude: Double) -> Double {
+        return N87kMechanics.trueAnomalyWithTrueLongitude(self, trueLongitude)
+    }
+
     // Eccentric Anomaly
     public func eccentricAnomalyWithTrueAnomaly(trueAnomaly: Double) -> NSNumber? {
         return N87kMechanics.eccentricAnomalyWithTrueAnomaly(self, trueAnomaly)
@@ -193,15 +197,16 @@ extension SimpleOrbit: Orbit {
         return N87kMechanics.timeIntervalUntilEjectionAngle(self, ejectionAngle)
     }
 
-    public func thetaAtTime(time: NSTimeInterval) -> NSNumber? {
-        return N87kMechanics.thetaAtTime(self, time)
+    // True Longitude
+    public func trueLongitudeWithTrueAnomaly(trueAnomaly: Double) -> Double {
+        return N87kMechanics.trueLongitudeWithTrueAnomaly(self, trueAnomaly)
     }
 
-    public dynamic var theta: NSNumber? {
-        return N87kMechanics.theta(self)
+    public dynamic var trueLongitude: NSNumber? {
+        return N87kMechanics.trueLongitude(self)
     }
 
-    @objc public class func keyPathsForValuesAffectingTheta() -> NSSet {
+    @objc public class func keyPathsForValuesAffectingTrueLongitude() -> NSSet {
         return keyPathsForValuesAffectingTrueAnomaly().setByAddingObject([ "longitudeOfAscendingNode", "meanAnomalyAtEpoch" ])
     }
 

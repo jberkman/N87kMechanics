@@ -117,8 +117,8 @@ class HohmannTransferTests: XCTestCase {
         println("days: \(transfer.travelTime / day)")
         XCTAssertEqualWithAccuracy(transfer.transferTime / day, year + 121, 1)
         XCTAssertEqualWithAccuracy(transfer.travelTime / day, 170, 1)
-        XCTAssertEqualWithAccuracy(transfer.transferPhaseAngle * M_PI / 180, 360 - 36.4, 1)
-        XCTAssertEqualWithAccuracy(transfer.deltaV, 1012, 10)
+        XCTAssertEqualWithAccuracy(transfer.transferPhaseAngle * 180 / M_PI, 304, 1)
+        XCTAssertEqualWithAccuracy(transfer.deltaV, 1104, 10)
     }
 
     func testFirstDresTransfer() {

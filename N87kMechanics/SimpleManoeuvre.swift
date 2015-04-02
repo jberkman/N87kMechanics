@@ -102,7 +102,11 @@ extension SimpleManoeuvre: Manoeuvre {
     public dynamic var ejectionDeltaV: NSNumber? { return N87kMechanics.ejectionDeltaV(self) }
     public func ejectionDeltaVWithOrbit(orbit: Orbit) -> NSNumber? { return N87kMechanics.ejectionDeltaVWithOrbit(self, orbit) }
 
-    public var captureDeltaV: NSNumber? { return N87kMechanics.captureDeltaV(self) }
+    public dynamic var captureDeltaV: NSNumber? { return N87kMechanics.captureDeltaV(self) }
+
+    @objc public class func keyPathsForValuesAffectingCaptureDeltaV() -> NSSet {
+        return NSSet(array: [ "targetOrbit.primaryBody.maxAtmosphere", "aerobrake", "targetOrbit.primaryBody.orbit.periapsis", "hyperbolicExcessCaptureVelocity" ])
+    }
 
     public func deltaVWithOrbit(orbit: Orbit) -> NSNumber? { return N87kMechanics.deltaVWithOrbit(self, orbit) }
 

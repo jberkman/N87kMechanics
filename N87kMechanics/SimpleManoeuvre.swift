@@ -61,6 +61,8 @@ public class SimpleManoeuvre: NSObject {
     // Outputs
     public dynamic var deltaV = 0.0
 
+    public dynamic var hyperbolicExcessEscapeVelocity = 0.0
+    public dynamic var hyperbolicExcessCaptureVelocity = 0.0
     public dynamic var transferTime: NSTimeInterval = 0
     public dynamic var travelTime: NSTimeInterval = 0
     public dynamic var transferPhaseAngle = 0.0
@@ -95,7 +97,13 @@ extension SimpleManoeuvre: Manoeuvre {
         return NSSet(array: [ "sourceBody.radius", "sourceOrbit.periapsis", "sourceBody.sphereOfInfluence", "sourceBody.orbit.gravitationalParameter", "deltaV" ])
     }
 
+    public func ejectionVelocityWithOrbit(orbit: Orbit) -> NSNumber? { return N87kMechanics.ejectionVelocityWithOrbit(self, orbit) }
+
+    public dynamic var ejectionDeltaV: NSNumber? { return N87kMechanics.ejectionDeltaV(self) }
     public func ejectionDeltaVWithOrbit(orbit: Orbit) -> NSNumber? { return N87kMechanics.ejectionDeltaVWithOrbit(self, orbit) }
+
+    public var captureDeltaV: NSNumber? { return N87kMechanics.captureDeltaV(self) }
+
     public func deltaVWithOrbit(orbit: Orbit) -> NSNumber? { return N87kMechanics.deltaVWithOrbit(self, orbit) }
 
     public var descriptiveText: String { return N87kMechanics.descriptiveText(self) }

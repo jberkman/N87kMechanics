@@ -503,7 +503,7 @@
 		<key>mass</key>
 		<real>3.2191322e+20</real>
 		<key>maxAtmosphere</key>
-		<real>14000</real>
+		<integer>0</integer>
 		<key>name</key>
 		<string>Dres</string>
 		<key>orbit</key>

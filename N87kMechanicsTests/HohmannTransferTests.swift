@@ -50,6 +50,7 @@ class HohmannTransferTests: XCTestCase {
         dres = bodies.filter { $0.name == "Dres" }.first!
 
         transfer = SimpleManoeuvre()
+        transfer.aerobrake = false
         transfer.sourceBody = kerbin
         transfer.sourceOrbit = SimpleOrbit()
         transfer.sourceOrbit!.primaryBody = kerbin
@@ -102,7 +103,14 @@ class HohmannTransferTests: XCTestCase {
         XCTAssertEqualWithAccuracy(transfer.transferTime / day, 235, 1)
         XCTAssertEqualWithAccuracy(transfer.travelTime / day, 295, 1)
         XCTAssertEqualWithAccuracy(transfer.transferPhaseAngle * 180 / M_PI, 36.66, 1)
-        XCTAssertEqualWithAccuracy(transfer.deltaV, 1100, 10)
+        XCTAssertEqualWithAccuracy(transfer.ejectionDeltaV!.doubleValue, 1046, 10)
+        XCTAssertEqualWithAccuracy(transfer.captureDeltaV!.doubleValue, 641, 10)
+        XCTAssertEqualWithAccuracy(transfer.deltaV, 1687, 20)
+
+        transfer.aerobrake = true
+        transfer.recalculateDeltaV()
+
+        XCTAssertEqual(transfer.captureDeltaV!.doubleValue, 0)
     }
 
     func testFirstEveTransfer() {
@@ -118,7 +126,14 @@ class HohmannTransferTests: XCTestCase {
         XCTAssertEqualWithAccuracy(transfer.transferTime / day, year + 121, 1)
         XCTAssertEqualWithAccuracy(transfer.travelTime / day, 170, 1)
         XCTAssertEqualWithAccuracy(transfer.transferPhaseAngle * 180 / M_PI, 304, 1)
-        XCTAssertEqualWithAccuracy(transfer.deltaV, 1104, 10)
+        XCTAssertEqualWithAccuracy(transfer.ejectionDeltaV!.doubleValue, 1024, 10)
+        XCTAssertEqualWithAccuracy(transfer.captureDeltaV!.doubleValue, 1400, 10)
+        XCTAssertEqualWithAccuracy(transfer.deltaV, 2424, 20)
+
+        transfer.aerobrake = true
+        transfer.recalculateDeltaV()
+
+        XCTAssertEqual(transfer.captureDeltaV!.doubleValue, 0)
     }
 
     func testFirstDresTransfer() {
@@ -135,6 +150,13 @@ class HohmannTransferTests: XCTestCase {
         XCTAssertEqualWithAccuracy(transfer.transferTime / day, 388, 1)
         XCTAssertEqualWithAccuracy(transfer.travelTime / day - year, 100, 1)
         XCTAssertEqualWithAccuracy(transfer.transferPhaseAngle * 180 / M_PI, 91, 1)
-        XCTAssertEqualWithAccuracy(transfer.deltaV, 1104, 10)
+        XCTAssertEqualWithAccuracy(transfer.ejectionDeltaV!.doubleValue, 1458, 10)
+        XCTAssertEqualWithAccuracy(transfer.captureDeltaV!.doubleValue, 1510, 10)
+        XCTAssertEqualWithAccuracy(transfer.deltaV, 2968, 20)
+
+        transfer.aerobrake = true
+        transfer.recalculateDeltaV()
+
+        XCTAssertEqualWithAccuracy(transfer.captureDeltaV!.doubleValue, 1510, 10)
     }
 }

@@ -57,15 +57,23 @@ public protocol Manoeuvre: Observable {
 
     // Transfers
     var isTransfer: Bool { get }
+    var hyperbolicExcessEscapeVelocity: Double { get set }
+    var hyperbolicExcessCaptureVelocity: Double { get set }
     var transferTime: NSTimeInterval { get set }
     var travelTime: NSTimeInterval { get set }
     var transferPhaseAngle: Double { get set }
 
     var ejectionAngle: NSNumber? { get }
     var currentPhaseAngle: NSNumber? { get }
-    var ejectionVelocity: NSNumber? { get }
 
+    var ejectionVelocity: NSNumber? { get }
+    func ejectionVelocityWithOrbit(orbit: Orbit) -> NSNumber?
+
+    var ejectionDeltaV: NSNumber? { get }
     func ejectionDeltaVWithOrbit(orbit: Orbit) -> NSNumber?
+
+    var captureDeltaV: NSNumber? { get }
+
     func deltaVWithOrbit(orbit: Orbit) -> NSNumber?
 
     var descriptiveText: String { get }
@@ -95,16 +103,25 @@ private struct Window {
     var time: NSTimeInterval = 0
     var travelTime: NSTimeInterval = 0
     var phaseAngle = 0.0
-    var deltaV = 0.0
+    var hyperbolicExcessEscapeVelocity = 0.0
+    var hyperbolicExcessCaptureVelocity = 0.0
 }
 
 public func ejectionVelocity(manoeuvre: Manoeuvre) -> Double? {
-    if let sourceBody = manoeuvre.sourceBody {
-        if let µ = sourceBody.orbit?.gravitationalParameter {
-            if let periapsis = manoeuvre.sourceOrbit?.periapsis?.doubleValue {
-                let r1 = sourceBody.radius + periapsis
-                let r2 = sourceBody.sphereOfInfluence
-                return sqrt((r1 * (r2 * pow(manoeuvre.deltaV, 2) - 2 * µ) + 2 * r2 * µ) / (r1 * r2))
+    if let orbit = manoeuvre.sourceOrbit {
+        return ejectionVelocityWithOrbit(manoeuvre, orbit)
+    }
+    return nil
+}
+
+public func ejectionVelocityWithOrbit(manoeuvre: Manoeuvre, orbit: Orbit) -> Double? {
+    if let periapsis = orbit.periapsis?.doubleValue {
+        if let primaryBody = orbit.primaryBody {
+            if let µ = primaryBody.orbit?.gravitationalParameter {
+//                let r1 = primaryBody.radius + periapsis
+//                let r2 = primaryBody.sphereOfInfluence
+                return sqrt(pow(manoeuvre.hyperbolicExcessEscapeVelocity, 2) + 2 * µ / (periapsis + primaryBody.radius))
+//                return sqrt((r1 * (r2 * pow(manoeuvre.deltaV, 2) - 2 * µ) + 2 * r2 * µ) / (r1 * r2))
             }
         }
     }
@@ -138,16 +155,51 @@ public func currentPhaseAngle(manoeuvre: Manoeuvre) -> Double? {
 }
 
 public func ejectionDeltaVWithOrbit(manoeuvre: Manoeuvre, orbit: Orbit) -> Double? {
-    if let ejectionVelocity = manoeuvre.ejectionVelocity?.doubleValue {
-        if let relativeVelocity = orbit.relativeVelocity?.doubleValue {
-            return abs(ejectionVelocity - relativeVelocity)
+    if let ejectionVelocity = ejectionVelocityWithOrbit(manoeuvre, orbit) {
+        if let radius = orbit.primaryBody?.radius {
+            if let periapsis = orbit.periapsis?.doubleValue {
+                if let relativeVelocity = orbit.relativeVelocityWithRadius(periapsis + radius)?.doubleValue {
+                    return abs(ejectionVelocity - relativeVelocity)
+                }
+            }
+        }
+    }
+    return nil
+}
+
+public func ejectionDeltaV(manoeuvre: Manoeuvre) -> Double? {
+    if let orbit = manoeuvre.sourceOrbit {
+        return ejectionDeltaVWithOrbit(manoeuvre, orbit)
+    }
+    return nil
+}
+
+public func captureDeltaV(manoeuvre: Manoeuvre) -> Double? {
+    if let orbit = manoeuvre.targetOrbit {
+        if let primaryBody = orbit.primaryBody {
+            if primaryBody.maxAtmosphere > 0 && manoeuvre.aerobrake {
+                return 0
+            } else if let µ = primaryBody.orbit?.gravitationalParameter {
+                if let periapsis = orbit.periapsis?.doubleValue {
+                    if let relativeVelocity = manoeuvre.targetOrbit?.relativeVelocityWithRadius(periapsis + primaryBody.radius)?.doubleValue {
+                        let captureVelocity = sqrt(pow(manoeuvre.hyperbolicExcessCaptureVelocity, 2) + 2 * µ / (periapsis + primaryBody.radius))
+                        return abs(captureVelocity - relativeVelocity)
+                    }
+                }
+            }
         }
     }
     return nil
 }
 
 public func deltaVWithOrbit(manoeuvre: Manoeuvre, orbit: Orbit) -> Double? {
-    return ejectionDeltaVWithOrbit(manoeuvre, orbit)
+    if let ejectionDeltaV = ejectionDeltaVWithOrbit(manoeuvre, orbit) {
+        let planeChangeDeltaV = 0.0
+        if let captureDeltaV = captureDeltaV(manoeuvre) {
+            return ejectionDeltaV + planeChangeDeltaV + captureDeltaV
+        }
+    }
+    return nil
 }
 
 private func computeTransfer(manoeuvre: Manoeuvre, t: Double) -> (Window, Double) {
@@ -181,12 +233,15 @@ private func computeTransfer(manoeuvre: Manoeuvre, t: Double) -> (Window, Double
     let period = orbit.period!.doubleValue
     let v1 = sourceOrbit.relativeVelocityWithRadius(r1)!.doubleValue
     let v2 = orbit.relativeVelocityWithRadius(r1)!.doubleValue
+    let v3 = orbit.relativeVelocityWithRadius(r2)!.doubleValue
+    let v4 = targetOrbit.relativeVelocityWithRadius(r2)!.doubleValue
 
     var window = Window()
     window.time = t
     window.travelTime = orbit.period!.doubleValue / 2
     window.phaseAngle = (targetTrueLongitude - sourceTrueLongitude + twoπ) % twoπ
-    window.deltaV = v2 - v1
+    window.hyperbolicExcessEscapeVelocity = v2 - v1
+    window.hyperbolicExcessCaptureVelocity = v4 - v3
 //    dlog("day \(Int(t / day)) tBody: \(Int(t2 / day)) tTransfer: \(Int(window.travelTime / day)) dV: \(Int(window.deltaV)) phase: \(Int(window.phaseAngle * 180 / M_PI))")
     return (window, t2)
 }
@@ -293,14 +348,13 @@ private func recalculateDeltaVWithTransferManoeuvre(manoeuvre: Manoeuvre) {
 //    dlog("\(Int(lower.0 / day)) | \(Int(lower.1 / day)) || \(Int(upper.0 / day)) | \(Int(upper.1 / day))")
 
     let window = computeTransfer(manoeuvre, (abs(lower.1) < abs(upper.1) ? lower : upper).0).0
+    manoeuvre.hyperbolicExcessEscapeVelocity = window.hyperbolicExcessEscapeVelocity
+    manoeuvre.hyperbolicExcessCaptureVelocity = window.hyperbolicExcessCaptureVelocity
     manoeuvre.transferTime = window.time
     manoeuvre.travelTime = window.travelTime
     manoeuvre.transferPhaseAngle = window.phaseAngle
-    if let sourceOrbit = manoeuvre.sourceOrbit {
-        if let deltaV = ejectionDeltaVWithOrbit(manoeuvre, sourceOrbit) {
-            manoeuvre.deltaV = deltaV
-        }
-    }
+
+    manoeuvre.deltaV = deltaVWithOrbit(manoeuvre, manoeuvre.sourceOrbit!)!
 }
 
 private func recalculateDeltaVWithLandingManoeuvre(manoeuvre: Manoeuvre) {
@@ -324,7 +378,7 @@ private func recalculateDeltaVWithLandingManoeuvre(manoeuvre: Manoeuvre) {
 
 public func recalculateDeltaV(manoeuvre: Manoeuvre) {
     if manoeuvre.isTransfer {
-        if manoeuvre.sourceBody?.orbit?.primaryBody?.orbit != nil && manoeuvre.targetBody?.orbit?.primaryBody?.orbit != nil {
+        if manoeuvre.sourceOrbit?.primaryBody?.orbit?.primaryBody?.orbit != nil && manoeuvre.targetOrbit?.primaryBody?.orbit?.primaryBody?.orbit != nil {
             recalculateDeltaVWithTransferManoeuvre(manoeuvre)
         }
     } else {

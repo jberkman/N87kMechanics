@@ -185,16 +185,16 @@ extension SimpleOrbit: Orbit {
     }
 
     // Transfers
-    public dynamic var anglePrograde: NSNumber? {
-        return N87kMechanics.anglePrograde(self)
+    public dynamic var angleToPrograde: NSNumber? {
+        return N87kMechanics.angleToPrograde(self)
     }
 
     @objc public class func keyPathsForValuesAffectingAnglePrograde() -> NSSet {
         return keyPathsForValuesAffectingTrueAnomaly().setByAddingObjectsFromArray([ "argumentOfPeriapsis", "primaryBody.orbit.argumentOfPeriapsis", "primaryBody.orbit.longitudeOfAscendingNode", "primaryBody.orbit.trueAnomaly", "longitudeOfAscendingNode" ])
     }
 
-    public func timeIntervalUntilEjectionAngle(ejectionAngle: Double) -> NSNumber? {
-        return N87kMechanics.timeIntervalUntilEjectionAngle(self, ejectionAngle)
+    public func timeIntervalUntilAngleToPrograde(angleToPrograde: Double) -> NSNumber? {
+        return N87kMechanics.timeIntervalUntilAngleToPrograde(self, angleToPrograde)
     }
 
     // True Longitude

@@ -118,10 +118,7 @@ public func ejectionVelocityWithOrbit(manoeuvre: Manoeuvre, orbit: Orbit) -> Dou
     if let periapsis = orbit.periapsis?.doubleValue {
         if let primaryBody = orbit.primaryBody {
             if let µ = primaryBody.orbit?.gravitationalParameter {
-//                let r1 = primaryBody.radius + periapsis
-//                let r2 = primaryBody.sphereOfInfluence
                 return sqrt(pow(manoeuvre.hyperbolicExcessEscapeVelocity, 2) + 2 * µ / (periapsis + primaryBody.radius))
-//                return sqrt((r1 * (r2 * pow(manoeuvre.deltaV, 2) - 2 * µ) + 2 * r2 * µ) / (r1 * r2))
             }
         }
     }
@@ -130,14 +127,18 @@ public func ejectionVelocityWithOrbit(manoeuvre: Manoeuvre, orbit: Orbit) -> Dou
 
 public func ejectionAngle(manoeuvre: Manoeuvre) -> Double? {
     if let sourceBody = manoeuvre.sourceBody {
-        if let periapsis = manoeuvre.sourceOrbit?.periapsis?.doubleValue {
-            if let µ = sourceBody.orbit?.gravitationalParameter {
-                if let v = manoeuvre.ejectionVelocity?.doubleValue {
-                    let r = sourceBody.radius + periapsis
-                    let e1 = v * v / 2 - µ / r
-                    let h = r * v
-                    let e2 = sqrt(1 + 2 * e1 * h * h / (µ * µ))
-                    return M_PI - acos(1 / e2)
+        if let sourceOrbitRadius = sourceBody.orbit?.semiMajorAxis {
+            if let targetOrbitRadius = manoeuvre.targetBody?.orbit?.semiMajorAxis {
+                if let periapsis = manoeuvre.sourceOrbit?.periapsis?.doubleValue {
+                    if let µ = sourceBody.orbit?.gravitationalParameter {
+                        if let v = manoeuvre.ejectionVelocity?.doubleValue {
+                            let r = sourceBody.radius + periapsis
+                            let e1 = v * v / 2 - µ / r
+                            let h = r * v
+                            let e2 = sqrt(1 + 2 * e1 * h * h / (µ * µ))
+                            return (sourceOrbitRadius > targetOrbitRadius ? 2 : 1) * M_PI - acos(1 / e2)
+                        }
+                    }
                 }
             }
         }

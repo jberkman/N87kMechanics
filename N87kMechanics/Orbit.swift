@@ -77,8 +77,8 @@ public protocol Orbit: Observable {
     var relativeVelocity: NSNumber? { get }
     func relativeVelocityWithRadius(radius: Double) -> NSNumber?
 
-    var anglePrograde: NSNumber? { get }
-    func timeIntervalUntilEjectionAngle(ejectionAngle: Double) -> NSNumber?
+    var angleToPrograde: NSNumber? { get }
+    func timeIntervalUntilAngleToPrograde(angleToPrograde: Double) -> NSNumber?
 
     var trueLongitude: NSNumber? { get }
     func trueLongitudeWithTrueAnomaly(trueAnomaly: Double) -> Double
@@ -266,12 +266,12 @@ public func relativeVelocity(orbit: Orbit) -> Double? {
 }
 
 // Transfers
-public func anglePrograde(orbit: Orbit) -> Double? {
+public func angleToPrograde(orbit: Orbit) -> Double? {
     if let primaryBody = orbit.primaryBody {
         if let primaryBodyOrbit = primaryBody.orbit {
-            if let parentAngle = anglePrograde(primaryBodyOrbit) {
+            if let parentLongitude = trueLongitude(primaryBodyOrbit) {
                 if let trueLongitude = trueLongitude(orbit) {
-                    return (trueLongitude - parentAngle + M_PI_2 + twoπ) % twoπ
+                    return (parentLongitude - trueLongitude + 2.5 * M_PI) % twoπ
                 }
             }
         }
@@ -281,10 +281,14 @@ public func anglePrograde(orbit: Orbit) -> Double? {
     return nil
 }
 
-public func timeIntervalUntilEjectionAngle(orbit: Orbit, ejectionAngle: Double) -> NSTimeInterval? {
-    if let period = period(orbit) {
-        if let anglePrograde = anglePrograde(orbit) {
-            return period * ((anglePrograde - ejectionAngle + twoπ) % twoπ) / twoπ
+public func timeIntervalUntilAngleToPrograde(orbit: Orbit, anAngleToPrograde: Double) -> NSTimeInterval? {
+    if let trueAnomaly = trueAnomaly(orbit) {
+        if let angleToPrograde = angleToPrograde(orbit) {
+            if let meanMotion = meanMotion(orbit) {
+                let m1 = meanAnomalyWithTrueAnomaly(orbit, trueAnomaly)
+                let m2 = meanAnomalyWithTrueAnomaly(orbit, trueAnomaly + angleToPrograde - anAngleToPrograde)
+                return ((m2 - m1 + twoπ) % twoπ) / meanMotion
+            }
         }
     }
     return nil

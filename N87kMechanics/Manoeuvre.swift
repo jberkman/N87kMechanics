@@ -251,7 +251,7 @@ private func computeTransfer(manoeuvre: Manoeuvre, t: Double) -> (Window, Double
     window.phaseAngle = (targetTrueLongitude - sourceTrueLongitude + twoπ) % twoπ
     window.hyperbolicExcessEscapeVelocity = v2 - v1
     window.hyperbolicExcessCaptureVelocity = v4 - v3
-    window.planeChangeDeltaV = abs(2 * vPlaneChange * sin((targetDeclination - orbitDeclination) / 2))
+    window.planeChangeDeltaV = 2 * vPlaneChange * abs(sin((targetDeclination - orbitDeclination) / 2))
 //    dlog("day \(Int(t / day)) tBody: \(Int(t2 / day)) tTransfer: \(Int(window.travelTime / day)) dV: \(Int(window.deltaV)) phase: \(Int(window.phaseAngle * 180 / M_PI))")
     return (window, t2)
 }

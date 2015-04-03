@@ -104,6 +104,7 @@ class HohmannTransferTests: XCTestCase {
         XCTAssertEqualWithAccuracy(transfer.travelTime / day, 295, 1)
         XCTAssertEqualWithAccuracy(transfer.transferPhaseAngle * 180 / M_PI, 36.66, 1)
         XCTAssertEqualWithAccuracy(transfer.ejectionDeltaV!.doubleValue, 1046, 10)
+        XCTAssertEqualWithAccuracy(transfer.planeChangeDeltaV, 7, 5)
         XCTAssertEqualWithAccuracy(transfer.captureDeltaV!.doubleValue, 641, 10)
         XCTAssertEqualWithAccuracy(transfer.deltaV, 1687, 20)
 
@@ -127,8 +128,9 @@ class HohmannTransferTests: XCTestCase {
         XCTAssertEqualWithAccuracy(transfer.travelTime / day, 170, 1)
         XCTAssertEqualWithAccuracy(transfer.transferPhaseAngle * 180 / M_PI, 304, 1)
         XCTAssertEqualWithAccuracy(transfer.ejectionDeltaV!.doubleValue, 1024, 10)
+        XCTAssertEqualWithAccuracy(transfer.planeChangeDeltaV, 375, 10)
         XCTAssertEqualWithAccuracy(transfer.captureDeltaV!.doubleValue, 1400, 10)
-        XCTAssertEqualWithAccuracy(transfer.deltaV, 2424, 20)
+        XCTAssertEqualWithAccuracy(transfer.deltaV, 2800, 20)
 
         transfer.aerobrake = true
         transfer.recalculateDeltaV()
@@ -151,8 +153,9 @@ class HohmannTransferTests: XCTestCase {
         XCTAssertEqualWithAccuracy(transfer.travelTime / day - year, 100, 1)
         XCTAssertEqualWithAccuracy(transfer.transferPhaseAngle * 180 / M_PI, 91, 1)
         XCTAssertEqualWithAccuracy(transfer.ejectionDeltaV!.doubleValue, 1458, 10)
+        XCTAssertEqualWithAccuracy(transfer.planeChangeDeltaV, 550, 10)
         XCTAssertEqualWithAccuracy(transfer.captureDeltaV!.doubleValue, 1510, 10)
-        XCTAssertEqualWithAccuracy(transfer.deltaV, 2968, 20)
+        XCTAssertEqualWithAccuracy(transfer.deltaV, 3516, 20)
 
         transfer.aerobrake = true
         transfer.recalculateDeltaV()

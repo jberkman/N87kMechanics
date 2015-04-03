@@ -66,6 +66,7 @@ public class SimpleManoeuvre: NSObject {
     public dynamic var transferTime: NSTimeInterval = 0
     public dynamic var travelTime: NSTimeInterval = 0
     public dynamic var transferPhaseAngle = 0.0
+    public dynamic var planeChangeDeltaV = 0.0
 
     deinit {
         for context in observerContexts {

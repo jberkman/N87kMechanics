@@ -210,6 +210,16 @@ extension SimpleOrbit: Orbit {
         return keyPathsForValuesAffectingTrueAnomaly().setByAddingObject([ "longitudeOfAscendingNode", "meanAnomalyAtEpoch" ])
     }
 
+    // Declination
+
+    public func declinationWithTrueAnomaly(trueAnomaly: Double) -> Double {
+        return N87kMechanics.declinationWithTrueAnomaly(self, trueAnomaly)
+    }
+
+    public dynamic var declination: NSNumber? {
+        return N87kMechanics.declination(self)
+    }
+
     // Misc
     public override func copy() -> AnyObject {
         let orbit = SimpleOrbit()

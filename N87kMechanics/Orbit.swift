@@ -83,6 +83,8 @@ public protocol Orbit: Observable {
     var trueLongitude: NSNumber? { get }
     func trueLongitudeWithTrueAnomaly(trueAnomaly: Double) -> Double
 
+    var declination: NSNumber? { get }
+    func declinationWithTrueAnomaly(trueAnomaly: Double) -> Double
 }
 
 public func copy(dest: Orbit, source: Orbit) {
@@ -302,6 +304,18 @@ public func trueLongitudeWithTrueAnomaly(orbit: Orbit, trueAnomaly: Double) -> D
 public func trueLongitude(orbit: Orbit) -> Double? {
     if let trueAnomaly = trueAnomaly(orbit) {
         return trueLongitudeWithTrueAnomaly(orbit, trueAnomaly)
+    }
+    return nil
+}
+
+// Declination
+public func declinationWithTrueAnomaly(orbit: Orbit, trueAnomaly: Double) -> Double {
+    return asin(sin(orbit.inclination) * sin(trueAnomaly + orbit.argumentOfPeriapsis))
+}
+
+public func declination(orbit: Orbit) -> Double? {
+    if let trueAnomaly = trueAnomaly(orbit) {
+        return declinationWithTrueAnomaly(orbit, trueAnomaly)
     }
     return nil
 }

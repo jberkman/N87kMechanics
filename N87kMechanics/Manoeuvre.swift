@@ -62,6 +62,7 @@ public protocol Manoeuvre: Observable {
     var transferTime: NSTimeInterval { get set }
     var travelTime: NSTimeInterval { get set }
     var transferPhaseAngle: Double { get set }
+    var planeChangeDeltaV: Double { get set }
 
     var ejectionAngle: NSNumber? { get }
     var currentPhaseAngle: NSNumber? { get }
@@ -105,6 +106,7 @@ private struct Window {
     var phaseAngle = 0.0
     var hyperbolicExcessEscapeVelocity = 0.0
     var hyperbolicExcessCaptureVelocity = 0.0
+    var planeChangeDeltaV = 0.0
 }
 
 public func ejectionVelocity(manoeuvre: Manoeuvre) -> Double? {
@@ -195,9 +197,8 @@ public func captureDeltaV(manoeuvre: Manoeuvre) -> Double? {
 
 public func deltaVWithOrbit(manoeuvre: Manoeuvre, orbit: Orbit) -> Double? {
     if let ejectionDeltaV = ejectionDeltaVWithOrbit(manoeuvre, orbit) {
-        let planeChangeDeltaV = 0.0
         if let captureDeltaV = captureDeltaV(manoeuvre) {
-            return ejectionDeltaV + planeChangeDeltaV + captureDeltaV
+            return ejectionDeltaV + manoeuvre.planeChangeDeltaV + captureDeltaV
         }
     }
     return nil
@@ -230,6 +231,9 @@ private func computeTransfer(manoeuvre: Manoeuvre, t: Double) -> (Window, Double
     orbit.primaryBody = targetOrbit.primaryBody
     orbit.eccentricity = eccentricityWithApoapsis(max(r1, r2) - radius, periapsis: min(r1, r2) - radius, radius: radius)
     orbit.semiMajorAxis = (r1 + r2) / 2
+    orbit.inclination = sourceOrbit.inclination
+    orbit.argumentOfPeriapsis = (sourceOrbit.argumentOfPeriapsis + sourceTrueAnomaly) % twoπ
+    orbit.longitudeOfAscendingNode = sourceOrbit.longitudeOfAscendingNode
 
     let period = orbit.period!.doubleValue
     let v1 = sourceOrbit.relativeVelocityWithRadius(r1)!.doubleValue
@@ -237,12 +241,17 @@ private func computeTransfer(manoeuvre: Manoeuvre, t: Double) -> (Window, Double
     let v3 = orbit.relativeVelocityWithRadius(r2)!.doubleValue
     let v4 = targetOrbit.relativeVelocityWithRadius(r2)!.doubleValue
 
+    let orbitDeclination = orbit.declinationWithTrueAnomaly(M_PI_2)
+    let targetDeclination = targetOrbit.declinationWithTrueAnomaly(targetTrueAnomaly2)
+    let vPlaneChange = orbit.relativeVelocityWithRadius(orbit.radiusWithTrueAnomaly(M_PI_2)!.doubleValue)!.doubleValue
+
     var window = Window()
     window.time = t
     window.travelTime = orbit.period!.doubleValue / 2
     window.phaseAngle = (targetTrueLongitude - sourceTrueLongitude + twoπ) % twoπ
     window.hyperbolicExcessEscapeVelocity = v2 - v1
     window.hyperbolicExcessCaptureVelocity = v4 - v3
+    window.planeChangeDeltaV = abs(2 * vPlaneChange * sin((targetDeclination - orbitDeclination) / 2))
 //    dlog("day \(Int(t / day)) tBody: \(Int(t2 / day)) tTransfer: \(Int(window.travelTime / day)) dV: \(Int(window.deltaV)) phase: \(Int(window.phaseAngle * 180 / M_PI))")
     return (window, t2)
 }
@@ -354,6 +363,7 @@ private func recalculateDeltaVWithTransferManoeuvre(manoeuvre: Manoeuvre) {
     manoeuvre.transferTime = window.time
     manoeuvre.travelTime = window.travelTime
     manoeuvre.transferPhaseAngle = window.phaseAngle
+    manoeuvre.planeChangeDeltaV = window.planeChangeDeltaV
 
     manoeuvre.deltaV = deltaVWithOrbit(manoeuvre, manoeuvre.sourceOrbit!)!
 }

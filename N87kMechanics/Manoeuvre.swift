@@ -389,8 +389,10 @@ private func recalculateDeltaVWithLandingManoeuvre(manoeuvre: Manoeuvre) {
 
 public func recalculateDeltaV(manoeuvre: Manoeuvre) {
     if manoeuvre.isTransfer {
-        if manoeuvre.sourceOrbit?.primaryBody?.orbit?.primaryBody?.orbit != nil && manoeuvre.targetOrbit?.primaryBody?.orbit?.primaryBody?.orbit != nil {
-            recalculateDeltaVWithTransferManoeuvre(manoeuvre)
+        if manoeuvre.sourceOrbit?.primaryBody?.orbit?.primaryBody?.orbit != nil &&
+            manoeuvre.targetOrbit?.primaryBody?.orbit?.primaryBody?.orbit != nil &&
+            manoeuvre.sourceBody?.orbit != nil && manoeuvre.targetBody?.orbit != nil {
+                recalculateDeltaVWithTransferManoeuvre(manoeuvre)
         }
     } else {
         switch (manoeuvre.sourceOrbit, manoeuvre.targetOrbit) {

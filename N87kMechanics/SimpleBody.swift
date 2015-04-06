@@ -71,7 +71,7 @@ extension SimpleBody: Body {
 
     public var tidallyLocked: NSNumber? { return N87kMechanics.tidallyLocked(self) }
 
-    public var parkingOrbitHeight: NSNumber? { return N87kMechanics.parkingOrbitHeight(self) }
+    public var parkingOrbitHeight: Double { return N87kMechanics.parkingOrbitHeight(self) }
     public var synchronousOrbitHeight: NSNumber? { return N87kMechanics.synchronousOrbitHeight(self) }
     public var semiSynchronousOrbitHeight: NSNumber? { return N87kMechanics.semiSynchronousOrbitHeight(self) }
 

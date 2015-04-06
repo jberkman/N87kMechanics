@@ -44,7 +44,7 @@ public protocol Body: NSObjectProtocol {
     var secondaryBodies: NSSet { get }
     func addSecondaryBody(body: Body)
 
-    var parkingOrbitHeight: NSNumber? { get }
+    var parkingOrbitHeight: Double { get }
     var synchronousOrbitHeight: NSNumber? { get }
     var semiSynchronousOrbitHeight: NSNumber? { get }
 }

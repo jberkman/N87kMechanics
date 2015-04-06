@@ -26,9 +26,6 @@
 
 import Foundation
 
-private let day = 60.0 * 60 * 6
-private let twoπ = 2 * M_PI
-
 @objc
 public protocol ManoeuvreType: NSObjectProtocol {
     var manoeuvre: Manoeuvre? { get }
@@ -99,16 +96,6 @@ public func descriptiveText(manoeuvre: Manoeuvre) -> String {
     }
 }
 
-private typealias DoublePair = (Double, Double)
-private struct Window {
-    var time: NSTimeInterval = 0
-    var travelTime: NSTimeInterval = 0
-    var phaseAngle = 0.0
-    var hyperbolicExcessEscapeVelocity = 0.0
-    var hyperbolicExcessCaptureVelocity = 0.0
-    var planeChangeDeltaV = 0.0
-}
-
 public func ejectionVelocity(manoeuvre: Manoeuvre) -> Double? {
     if let orbit = manoeuvre.sourceOrbit {
         return ejectionVelocityWithOrbit(manoeuvre, orbit)
@@ -117,7 +104,9 @@ public func ejectionVelocity(manoeuvre: Manoeuvre) -> Double? {
 }
 
 public func ejectionVelocityWithOrbit(manoeuvre: Manoeuvre, orbit: Orbit) -> Double? {
-    if let periapsis = orbit.periapsis?.doubleValue {
+    /*if orbit.primaryBody === manoeuvre.targetBody?.orbit?.primaryBody {
+        return manoeuvre.hyperbolicExcessEscapeVelocity
+    } else*/ if let periapsis = orbit.periapsis?.doubleValue {
         if let primaryBody = orbit.primaryBody {
             if let µ = primaryBody.orbit?.gravitationalParameter {
                 return sqrt(pow(manoeuvre.hyperbolicExcessEscapeVelocity, 2) + 2 * µ / (periapsis + primaryBody.radius))
@@ -158,7 +147,9 @@ public func currentPhaseAngle(manoeuvre: Manoeuvre) -> Double? {
 }
 
 public func ejectionDeltaVWithOrbit(manoeuvre: Manoeuvre, orbit: Orbit) -> Double? {
-    if let ejectionVelocity = ejectionVelocityWithOrbit(manoeuvre, orbit) {
+    if orbit.primaryBody === manoeuvre.targetBody?.orbit?.primaryBody {
+        return manoeuvre.hyperbolicExcessEscapeVelocity
+    } else if let ejectionVelocity = ejectionVelocityWithOrbit(manoeuvre, orbit) {
         if let radius = orbit.primaryBody?.radius {
             if let periapsis = orbit.periapsis?.doubleValue {
                 if let relativeVelocity = orbit.relativeVelocityWithRadius(periapsis + radius)?.doubleValue {
@@ -182,6 +173,8 @@ public func captureDeltaV(manoeuvre: Manoeuvre) -> Double? {
         if let primaryBody = orbit.primaryBody {
             if primaryBody.maxAtmosphere > 0 && manoeuvre.aerobrake {
                 return 0
+            } else if primaryBody === manoeuvre.sourceBody?.orbit?.primaryBody {
+                return manoeuvre.hyperbolicExcessCaptureVelocity
             } else if let µ = primaryBody.orbit?.gravitationalParameter {
                 if let periapsis = orbit.periapsis?.doubleValue {
                     if let relativeVelocity = manoeuvre.targetOrbit?.relativeVelocityWithRadius(periapsis + primaryBody.radius)?.doubleValue {
@@ -204,62 +197,75 @@ public func deltaVWithOrbit(manoeuvre: Manoeuvre, orbit: Orbit) -> Double? {
     return nil
 }
 
-private func computeTransfer(manoeuvre: Manoeuvre, t: Double) -> (Window, Double) {
-    let sourceOrbit = manoeuvre.sourceBody!.orbit!
-    let targetOrbit = manoeuvre.targetBody!.orbit!
-
-    let sourceTrueAnomaly = sourceOrbit.trueAnomalyAtTime(t)!.doubleValue
-    let targetTrueAnomaly = targetOrbit.trueAnomalyAtTime(t)!.doubleValue
-
-    let sourceTrueLongitude = sourceOrbit.trueLongitudeWithTrueAnomaly(sourceTrueAnomaly)
-    let targetTrueLongitude = targetOrbit.trueLongitudeWithTrueAnomaly(targetTrueAnomaly)
-    let targetTrueLongitude2 = sourceTrueLongitude + M_PI
-    let targetTrueAnomaly2 = targetOrbit.trueAnomalyWithTrueLongitude(targetTrueLongitude2)
-
-//    dlog("target goes from \(targetTrueLongitude * 180 / M_PI) to \(targetTrueLongitude2 * 180 / M_PI)")
-
-    let r1 = sourceOrbit.radiusWithTrueAnomaly(sourceTrueAnomaly)!.doubleValue
-    let r2 = targetOrbit.radiusWithTrueAnomaly(targetTrueAnomaly2)!.doubleValue
-
-    let tm1 = targetOrbit.meanAnomalyWithTrueAnomaly(targetTrueAnomaly)!.doubleValue
-    let tm2 = targetOrbit.meanAnomalyWithTrueAnomaly(targetTrueAnomaly2)!.doubleValue
-    let meanMotion = targetOrbit.meanMotion!.doubleValue
-    let t2 = ((tm2 - tm1 + twoπ) % twoπ) / meanMotion
-
-    let radius = targetOrbit.primaryBody!.radius
-    let orbit = SimpleOrbit()
-    orbit.primaryBody = targetOrbit.primaryBody
-    orbit.eccentricity = eccentricityWithApoapsis(max(r1, r2) - radius, periapsis: min(r1, r2) - radius, radius: radius)
-    orbit.semiMajorAxis = (r1 + r2) / 2
-    orbit.inclination = sourceOrbit.inclination
-    orbit.argumentOfPeriapsis = (sourceOrbit.argumentOfPeriapsis + sourceTrueAnomaly) % twoπ
-    orbit.longitudeOfAscendingNode = sourceOrbit.longitudeOfAscendingNode
-
-    let period = orbit.period!.doubleValue
-    let v1 = sourceOrbit.relativeVelocityWithRadius(r1)!.doubleValue
-    let v2 = orbit.relativeVelocityWithRadius(r1)!.doubleValue
-    let v3 = orbit.relativeVelocityWithRadius(r2)!.doubleValue
-    let v4 = targetOrbit.relativeVelocityWithRadius(r2)!.doubleValue
-
-    let orbitDeclination = orbit.declinationWithTrueAnomaly(M_PI_2)
-    let targetDeclination = targetOrbit.declinationWithTrueAnomaly(targetTrueAnomaly2)
-    let vPlaneChange = orbit.relativeVelocityWithRadius(orbit.radiusWithTrueAnomaly(M_PI_2)!.doubleValue)!.doubleValue
-
-    var window = Window()
-    window.time = t
-    window.travelTime = orbit.period!.doubleValue / 2
-    window.phaseAngle = (targetTrueLongitude - sourceTrueLongitude + twoπ) % twoπ
-    window.hyperbolicExcessEscapeVelocity = v2 - v1
-    window.hyperbolicExcessCaptureVelocity = v4 - v3
-    window.planeChangeDeltaV = 2 * vPlaneChange * abs(sin((targetDeclination - orbitDeclination) / 2))
-//    dlog("day \(Int(t / day)) tBody: \(Int(t2 / day)) tTransfer: \(Int(window.travelTime / day)) dV: \(Int(window.deltaV)) phase: \(Int(window.phaseAngle * 180 / M_PI))")
-    return (window, t2)
-}
-
-private func deltaTPair(manoeuvre: Manoeuvre, t: Double) -> DoublePair {
-    let (window, t2) = computeTransfer(manoeuvre, t)
-    return (t, window.travelTime - t2)
-}
+//private func computeTransfer(manoeuvre: Manoeuvre, transferType: TransferType, t: Double) -> (Window, Double) {
+//
+//    let (sourceOrbit: Orbit, targetOrbit: Orbit) = {
+//        switch transferType {
+//        case .ToSecondary:
+//            dlog("planet -> moon or star -> planet")
+//            return (manoeuvre.sourceOrbit!, manoeuvre.targetBody!.orbit!)
+//        case .ToPrimary:
+//            dlog("moon -> planet or planet -> star")
+//            return (manoeuvre.sourceBody!.orbit!, manoeuvre.targetOrbit!)
+//        case .BetweenSecondaries:
+//            dlog("moon -> moon or planet -> planet")
+//            return (manoeuvre.sourceBody!.orbit!, manoeuvre.targetBody!.orbit!)
+//        }
+//    }()
+//    assert(sourceOrbit.primaryBody === targetOrbit.primaryBody)
+//
+//    let sourceTrueAnomaly = sourceOrbit.trueAnomalyAtTime(t)!.doubleValue
+//    let targetTrueAnomaly = targetOrbit.trueAnomalyAtTime(t)!.doubleValue
+//
+//    let sourceTrueLongitude = sourceOrbit.trueLongitudeWithTrueAnomaly(sourceTrueAnomaly)
+//    let targetTrueLongitude = targetOrbit.trueLongitudeWithTrueAnomaly(targetTrueAnomaly)
+//    let targetTrueLongitude2 = sourceTrueLongitude + M_PI
+//    let targetTrueAnomaly2 = targetOrbit.trueAnomalyWithTrueLongitude(targetTrueLongitude2)
+//
+////    dlog("target goes from \(targetTrueLongitude * 180 / M_PI) to \(targetTrueLongitude2 * 180 / M_PI)")
+//
+//    let r1 = sourceOrbit.radiusWithTrueAnomaly(sourceTrueAnomaly)!.doubleValue
+//    let r2 = targetOrbit.radiusWithTrueAnomaly(targetTrueAnomaly2)!.doubleValue
+//
+//    let tm1 = targetOrbit.meanAnomalyWithTrueAnomaly(targetTrueAnomaly)!.doubleValue
+//    let tm2 = targetOrbit.meanAnomalyWithTrueAnomaly(targetTrueAnomaly2)!.doubleValue
+//    let meanMotion = targetOrbit.meanMotion!.doubleValue
+//    let t2 = ((tm2 - tm1 + twoπ) % twoπ) / meanMotion
+//
+//    let radius = targetOrbit.primaryBody!.radius
+//    let orbit = SimpleOrbit()
+//    orbit.primaryBody = targetOrbit.primaryBody
+//    orbit.eccentricity = eccentricityWithApoapsis(max(r1, r2) - radius, periapsis: min(r1, r2) - radius, radius: radius)
+//    orbit.semiMajorAxis = (r1 + r2) / 2
+//    orbit.inclination = sourceOrbit.inclination
+//    orbit.argumentOfPeriapsis = (sourceOrbit.argumentOfPeriapsis + sourceTrueAnomaly) % twoπ
+//    orbit.longitudeOfAscendingNode = sourceOrbit.longitudeOfAscendingNode
+//
+//    let period = orbit.period!.doubleValue
+//    let v1 = sourceOrbit.relativeVelocityWithRadius(r1)!.doubleValue
+//    let v2 = orbit.relativeVelocityWithRadius(r1)!.doubleValue
+//    let v3 = orbit.relativeVelocityWithRadius(r2)!.doubleValue
+//    let v4 = targetOrbit.relativeVelocityWithRadius(r2)!.doubleValue
+//
+//    let orbitDeclination = orbit.declinationWithTrueAnomaly(M_PI_2)
+//    let targetDeclination = targetOrbit.declinationWithTrueAnomaly(targetTrueAnomaly2)
+//    let vPlaneChange = orbit.relativeVelocityWithRadius(orbit.radiusWithTrueAnomaly(M_PI_2)!.doubleValue)!.doubleValue
+//
+//    var window = Window()
+//    window.time = t
+//    window.travelTime = period / 2
+//    window.phaseAngle = (targetTrueLongitude - sourceTrueLongitude + twoπ) % twoπ
+//    window.hyperbolicExcessEscapeVelocity = v2 - v1
+//    window.hyperbolicExcessCaptureVelocity = v4 - v3
+//    window.planeChangeDeltaV = 2 * vPlaneChange * abs(sin((targetDeclination - orbitDeclination) / 2))
+////    dlog("day \(Int(t / day)) tBody: \(Int(t2 / day)) tTransfer: \(Int(window.travelTime / day)) dV: \(Int(window.deltaV)) phase: \(Int(window.phaseAngle * 180 / M_PI))")
+//    return (window, t2)
+//}
+//
+//private func deltaTPair(manoeuvre: Manoeuvre, transferType: TransferType, t: Double) -> DoublePair {
+//    let (window, t2) = computeTransfer(manoeuvre, transferType, t)
+//    return (t, window.travelTime - t2)
+//}
 
 public func deltaV(sourceOrbit: Orbit, targetOrbit: Orbit) -> Double? {
     let transfer = SimpleOrbit()
@@ -322,50 +328,74 @@ private func recalculateDeltaVWithOrbitalChangeManouevre(manoeuvre: Manoeuvre) {
 }
 
 private func recalculateDeltaVWithTransferManoeuvre(manoeuvre: Manoeuvre) {
-    let t = max(manoeuvre.initialTime, UniversalTime.currentUniversalTime.timeIntervalSinceEpoch)
+    if let transfer = HohmannTransfer(manoeuvre: manoeuvre) {
+        let t = max(manoeuvre.initialTime, UniversalTime.currentUniversalTime.timeIntervalSinceEpoch)
+        var lower = (time: t, transfer: transfer.transferAtTime(t))
+        if transfer.type != .ToPrimary {
+            let gamma = min(period(transfer.sourceOrbit)!, period(transfer.targetOrbit)!) / 6
+            func nextWindow() -> (time: Double, transfer: (orbit: Orbit, error: Double)) {
+                let t2 = lower.time + gamma
+                return (time: t2, transfer: transfer.transferAtTime(t2))
+            }
 
-    let sourcePeriod = manoeuvre.sourceBody!.orbit!.period!.doubleValue
-    let targetPeriod = manoeuvre.targetBody!.orbit!.period!.doubleValue
+            let startPositive = period(transfer.sourceOrbit)! < period(transfer.targetOrbit)!
+            while startPositive ? lower.transfer.error < 0 : lower.transfer.error > 0 {
+                lower = nextWindow()
+            }
+            var upper = nextWindow()
 
-    var gamma = min(sourcePeriod, targetPeriod) / 6
+            while startPositive ? upper.transfer.error > 0 : upper.transfer.error < 0 {
+                lower = upper
+                upper = nextWindow()
+            }
 
-    var lower = deltaTPair(manoeuvre, t)
-    let startPositive = sourcePeriod < targetPeriod
+            while min(abs(lower.transfer.error), abs(upper.transfer.error)) > 1 {
+                let t5 = (lower.time + upper.time) / 2
+                let guess = (time: t5, transfer: transfer.transferAtTime(t5))
+                dlog("\(Int(lower.time / day)) | \(Int(lower.transfer.error / day)) || \(Int(guess.time / day)) | \(Int(guess.transfer.error / day)) || \(Int(upper.time / day)) | \(Int(upper.transfer.error / day))")
+                if (lower.transfer.error < 0) == (guess.transfer.error < 0) {
+                    lower = guess
+                } else {
+                    upper = guess
+                }
+//                dlog("lower.transfer.error: \(lower.transfer.error) upper.1: \(upper.transfer.error)")
+            }
 
-    while startPositive ? lower.1 < 0 : lower.1 > 0 {
-//        dlog("\(Int(lower.0 / day)) | \(Int(lower.1 / day))")
-        lower = deltaTPair(manoeuvre, lower.0 + gamma)
-    }
-    var upper = deltaTPair(manoeuvre, lower.0 + gamma)
+            dlog("\(Int(lower.time / day)) | \(Int(lower.transfer.error / day)) || \(Int(upper.time / day)) | \(Int(upper.transfer.error / day))")
 
-    while startPositive ? upper.1 > 0 : upper.1 < 0 {
-//        dlog("\(Int(lower.0 / day)) | \(Int(lower.1 / day)) || \(Int(upper.0 / day)) | \(Int(upper.1 / day))")
-        lower = upper
-        upper = deltaTPair(manoeuvre, lower.0 + gamma)
-    }
-
-    while min(abs(lower.1), abs(upper.1)) > 1 {
-        let guess = deltaTPair(manoeuvre, (lower.0 + upper.0) / 2)
-//        dlog("\(Int(lower.0 / day)) | \(Int(lower.1 / day)) || \(Int(guess.0 / day)) | \(Int(guess.1 / day)) || \(Int(upper.0 / day)) | \(Int(upper.1 / day))")
-        if (lower.1 < 0) == (guess.1 < 0) {
-            lower = guess
-        } else {
-            upper = guess
+            lower = abs(lower.transfer.error) < abs(upper.transfer.error) ? lower : upper
         }
-//        dlog("lower.1: \(lower.1) upper.1: \(upper.1)")
+
+        var r = [ 0, M_PI_2, M_PI ].map { radiusWithTrueAnomaly(lower.transfer.orbit, $0) }
+        if transfer.sourceOrbit.semiMajorAxis > transfer.targetOrbit.semiMajorAxis {
+            r = r.reverse()
+        }
+
+        let v1 = relativeVelocityWithRadius(transfer.sourceOrbit, r[0])!
+        let v2 = relativeVelocityWithRadius(lower.transfer.orbit, r[0])!
+        let v3 = relativeVelocityWithRadius(lower.transfer.orbit, r[2])!
+        let v4 = relativeVelocityWithRadius(transfer.targetOrbit, r[2])!
+
+        let tPeriod = period(lower.transfer.orbit)!
+        let orbitDeclination = declinationWithTrueAnomaly(lower.transfer.orbit, M_PI_2)
+        let targetTrueAnomaly2 = trueAnomalyAtTime(transfer.targetOrbit, lower.time + tPeriod / 2)!
+        let targetDeclination = declinationWithTrueAnomaly(transfer.targetOrbit, targetTrueAnomaly2)
+        let vPlaneChange = relativeVelocityWithRadius(lower.transfer.orbit, r[1])!
+
+        let sourceTrueLongitude = trueLongitudeWithTrueAnomaly(transfer.sourceOrbit, trueAnomalyAtTime(transfer.sourceOrbit, lower.time)!)
+        let targetTrueLongitude = trueLongitudeWithTrueAnomaly(transfer.targetOrbit, trueAnomalyAtTime(transfer.targetOrbit, lower.time)!)
+
+        manoeuvre.hyperbolicExcessEscapeVelocity = abs(v2 - v1)
+        manoeuvre.hyperbolicExcessCaptureVelocity = abs(v4 - v3)
+        manoeuvre.transferTime = lower.time
+        manoeuvre.travelTime = tPeriod / 2
+        manoeuvre.transferPhaseAngle = (targetTrueLongitude - sourceTrueLongitude + twoπ) % twoπ
+        manoeuvre.planeChangeDeltaV = 2 * vPlaneChange * abs(sin((targetDeclination - orbitDeclination) / 2))
+
+        manoeuvre.deltaV = deltaVWithOrbit(manoeuvre, manoeuvre.sourceOrbit!)!
+
+//        dlog("day \(Int(window.time / day)) tBody: \(Int(window.transfer.error / day)) tTransfer: \(Int(manoeuvre.travelTime / day)) dV: \(Int(manoeuvre.deltaV)) phase: \(Int(manoeuvre.transferPhaseAngle * 180 / M_PI))")
     }
-
-//    dlog("\(Int(lower.0 / day)) | \(Int(lower.1 / day)) || \(Int(upper.0 / day)) | \(Int(upper.1 / day))")
-
-    let window = computeTransfer(manoeuvre, (abs(lower.1) < abs(upper.1) ? lower : upper).0).0
-    manoeuvre.hyperbolicExcessEscapeVelocity = window.hyperbolicExcessEscapeVelocity
-    manoeuvre.hyperbolicExcessCaptureVelocity = window.hyperbolicExcessCaptureVelocity
-    manoeuvre.transferTime = window.time
-    manoeuvre.travelTime = window.travelTime
-    manoeuvre.transferPhaseAngle = window.phaseAngle
-    manoeuvre.planeChangeDeltaV = window.planeChangeDeltaV
-
-    manoeuvre.deltaV = deltaVWithOrbit(manoeuvre, manoeuvre.sourceOrbit!)!
 }
 
 private func recalculateDeltaVWithLandingManoeuvre(manoeuvre: Manoeuvre) {
@@ -389,10 +419,8 @@ private func recalculateDeltaVWithLandingManoeuvre(manoeuvre: Manoeuvre) {
 
 public func recalculateDeltaV(manoeuvre: Manoeuvre) {
     if manoeuvre.isTransfer {
-        if manoeuvre.sourceOrbit?.primaryBody?.orbit?.primaryBody?.orbit != nil &&
-            manoeuvre.targetOrbit?.primaryBody?.orbit?.primaryBody?.orbit != nil &&
-            manoeuvre.sourceBody?.orbit != nil && manoeuvre.targetBody?.orbit != nil {
-                recalculateDeltaVWithTransferManoeuvre(manoeuvre)
+        if manoeuvre.sourceOrbit?.primaryBody === manoeuvre.sourceBody && manoeuvre.targetOrbit?.primaryBody === manoeuvre.targetBody {
+            recalculateDeltaVWithTransferManoeuvre(manoeuvre)
         }
     } else {
         switch (manoeuvre.sourceOrbit, manoeuvre.targetOrbit) {

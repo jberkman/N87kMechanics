@@ -26,8 +26,6 @@
 
 import Foundation
 
-private let twoπ = 2 * M_PI
-
 @objc
 public protocol Orbit: Observable {
 

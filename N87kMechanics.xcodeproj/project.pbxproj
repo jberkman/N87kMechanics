@@ -12,6 +12,8 @@
 		160620F31AA8D43000A5A5D1 /* Body.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160620F21AA8D43000A5A5D1 /* Body.swift */; };
 		160620F51AA8D49000A5A5D1 /* dlog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160620F41AA8D49000A5A5D1 /* dlog.swift */; };
 		160620FD1AA8DB2500A5A5D1 /* Manoeuvre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160620FC1AA8DB2500A5A5D1 /* Manoeuvre.swift */; };
+		162746C81AD1B8E600B8D3FA /* HohmannTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162746C71AD1B8E600B8D3FA /* HohmannTransfer.swift */; };
+		162746CA1AD1B97C00B8D3FA /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162746C91AD1B97C00B8D3FA /* Constants.swift */; };
 		162D401D1AB14F3600283AFD /* OrbitalParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162D401C1AB14F3600283AFD /* OrbitalParameter.swift */; };
 		1688990E1AB5719500C6B325 /* SimpleOrbit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1688990D1AB5719500C6B325 /* SimpleOrbit.swift */; };
 		168899141AB5795B00C6B325 /* SimpleBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168899131AB5795B00C6B325 /* SimpleBody.swift */; };
@@ -46,6 +48,8 @@
 		160620F61AA8D75F00A5A5D1 /* Orbit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Orbit.swift; sourceTree = "<group>"; };
 		160620FC1AA8DB2500A5A5D1 /* Manoeuvre.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Manoeuvre.swift; sourceTree = "<group>"; };
 		160620FE1AA8DC0800A5A5D1 /* HohmannTransferTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HohmannTransferTests.swift; sourceTree = "<group>"; };
+		162746C71AD1B8E600B8D3FA /* HohmannTransfer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HohmannTransfer.swift; sourceTree = "<group>"; };
+		162746C91AD1B97C00B8D3FA /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		162D401C1AB14F3600283AFD /* OrbitalParameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrbitalParameter.swift; sourceTree = "<group>"; };
 		1688990D1AB5719500C6B325 /* SimpleOrbit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleOrbit.swift; sourceTree = "<group>"; };
 		168899131AB5795B00C6B325 /* SimpleBody.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleBody.swift; sourceTree = "<group>"; };
@@ -98,7 +102,9 @@
 			isa = PBXGroup;
 			children = (
 				160620F21AA8D43000A5A5D1 /* Body.swift */,
+				162746C91AD1B97C00B8D3FA /* Constants.swift */,
 				160620F41AA8D49000A5A5D1 /* dlog.swift */,
+				162746C71AD1B8E600B8D3FA /* HohmannTransfer.swift */,
 				160620FC1AA8DB2500A5A5D1 /* Manoeuvre.swift */,
 				160620D01AA8D3C600A5A5D1 /* N87kMechanics.h */,
 				16ECA20C1AB5580900FF9762 /* Observable.swift */,
@@ -251,10 +257,12 @@
 			files = (
 				160620F31AA8D43000A5A5D1 /* Body.swift in Sources */,
 				162D401D1AB14F3600283AFD /* OrbitalParameter.swift in Sources */,
+				162746C81AD1B8E600B8D3FA /* HohmannTransfer.swift in Sources */,
 				160620FD1AA8DB2500A5A5D1 /* Manoeuvre.swift in Sources */,
 				160620F51AA8D49000A5A5D1 /* dlog.swift in Sources */,
 				16ECA20D1AB5580900FF9762 /* Observable.swift in Sources */,
 				168899141AB5795B00C6B325 /* SimpleBody.swift in Sources */,
+				162746CA1AD1B97C00B8D3FA /* Constants.swift in Sources */,
 				16ECA1FF1AB3EE1100FF9762 /* UniversalTime.swift in Sources */,
 				1688990E1AB5719500C6B325 /* SimpleOrbit.swift in Sources */,
 				16ECA2101AB55E0B00FF9762 /* Orbit.swift in Sources */,

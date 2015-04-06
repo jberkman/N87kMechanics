@@ -361,7 +361,7 @@ private func recalculateDeltaVWithTransferManoeuvre(manoeuvre: Manoeuvre) {
 //                dlog("lower.transfer.error: \(lower.transfer.error) upper.1: \(upper.transfer.error)")
             }
 
-            dlog("\(Int(lower.time / day)) | \(Int(lower.transfer.error / day)) || \(Int(upper.time / day)) | \(Int(upper.transfer.error / day))")
+//            dlog("\(Int(lower.time / day)) | \(Int(lower.transfer.error / day)) || \(Int(upper.time / day)) | \(Int(upper.transfer.error / day))")
 
             lower = abs(lower.transfer.error) < abs(upper.transfer.error) ? lower : upper
         }

@@ -352,7 +352,7 @@ private func recalculateDeltaVWithTransferManoeuvre(manoeuvre: Manoeuvre) {
             while min(abs(lower.transfer.error), abs(upper.transfer.error)) > 1 {
                 let t5 = (lower.time + upper.time) / 2
                 let guess = (time: t5, transfer: transfer.transferAtTime(t5))
-                dlog("\(Int(lower.time / day)) | \(Int(lower.transfer.error / day)) || \(Int(guess.time / day)) | \(Int(guess.transfer.error / day)) || \(Int(upper.time / day)) | \(Int(upper.transfer.error / day))")
+//                dlog("\(Int(lower.time / day)) | \(Int(lower.transfer.error / day)) || \(Int(guess.time / day)) | \(Int(guess.transfer.error / day)) || \(Int(upper.time / day)) | \(Int(upper.transfer.error / day))")
                 if (lower.transfer.error < 0) == (guess.transfer.error < 0) {
                     lower = guess
                 } else {

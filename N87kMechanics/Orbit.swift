@@ -102,12 +102,10 @@ public func copy(dest: Orbit, source: Orbit) {
 }
 
 public func isStable(orbit: Orbit) -> Bool? {
-    if let primaryBody = orbit.primaryBody {
-        if let apoapsis = apoapsis(orbit) {
-            if let periapsis = periapsis(orbit) {
-                return periapsis > primaryBody.maxAtmosphere && apoapsis < primaryBody.sphereOfInfluence
-            }
-        }
+    if let primaryBody = orbit.primaryBody,
+        apoapsis = apoapsis(orbit),
+        periapsis = periapsis(orbit) {
+            return periapsis > primaryBody.maxAtmosphere && apoapsis < primaryBody.sphereOfInfluence
     }
     return nil
 }
@@ -124,11 +122,10 @@ public func periapsis(orbit: Orbit) -> Double? {
 }
 
 public func setPeriapsis(orbit: Orbit, periapsis: Double) {
-    if let radius = orbit.primaryBody?.radius {
-        if let oldApoapsis = apoapsis(orbit) {
+    if let radius = orbit.primaryBody?.radius,
+        oldApoapsis = apoapsis(orbit) {
             orbit.eccentricity = eccentricityWithApoapsis(oldApoapsis, periapsis: periapsis, radius: radius)
             orbit.semiMajorAxis = (oldApoapsis + periapsis) / 2 + radius
-        }
     }
 }
 
@@ -140,10 +137,9 @@ public func timeOfPeriapsisPassage(orbit: Orbit) -> NSTimeInterval? {
 }
 
 public func timeToPeriapsis(orbit: Orbit) -> NSTimeInterval? {
-    if let meanMotion = meanMotion(orbit) {
-        if let meanAnomaly = meanAnomaly(orbit) {
+    if let meanMotion = meanMotion(orbit),
+        meanAnomaly = meanAnomaly(orbit) {
             return (twoπ - meanAnomaly) / meanMotion
-        }
     }
     return nil
 }
@@ -157,21 +153,18 @@ public func apoapsis(orbit: Orbit) -> Double? {
 }
 
 public func setApoapsis(orbit: Orbit, apoapsis: Double) {
-    if let radius = orbit.primaryBody?.radius {
-        if let oldPeriapsis = periapsis(orbit) {
+    if let radius = orbit.primaryBody?.radius,
+        oldPeriapsis = periapsis(orbit) {
             orbit.eccentricity = eccentricityWithApoapsis(apoapsis, periapsis: oldPeriapsis, radius: radius)
             orbit.semiMajorAxis = (apoapsis + oldPeriapsis) / 2 + radius
-        }
     }
 }
 
 public func timeToApoapsis(orbit: Orbit) -> NSTimeInterval? {
-    if orbit.eccentricity <= 1 {
-        if let meanMotion = meanMotion(orbit) {
-            if let meanAnomaly = meanAnomaly(orbit) {
-                return ((3 * M_PI - meanAnomaly) % twoπ) / meanMotion
-            }
-        }
+    if orbit.eccentricity <= 1,
+        meanMotion = meanMotion(orbit),
+        meanAnomaly = meanAnomaly(orbit) {
+            return ((3 * M_PI - meanAnomaly) % twoπ) / meanMotion
     }
     return nil
 }
@@ -268,12 +261,10 @@ public func relativeVelocity(orbit: Orbit) -> Double? {
 // Transfers
 public func angleToPrograde(orbit: Orbit) -> Double? {
     if let primaryBody = orbit.primaryBody {
-        if let primaryBodyOrbit = primaryBody.orbit {
-            if let parentLongitude = trueLongitude(primaryBodyOrbit) {
-                if let trueLongitude = trueLongitude(orbit) {
-                    return (parentLongitude - trueLongitude + 2.5 * M_PI) % twoπ
-                }
-            }
+        if let primaryBodyOrbit = primaryBody.orbit,
+            parentLongitude = trueLongitude(primaryBodyOrbit),
+            trueLongitude = trueLongitude(orbit) {
+                return (parentLongitude - trueLongitude + 2.5 * M_PI) % twoπ
         }
     } else {
         return 0
@@ -282,14 +273,12 @@ public func angleToPrograde(orbit: Orbit) -> Double? {
 }
 
 public func timeIntervalUntilAngleToPrograde(orbit: Orbit, anAngleToPrograde: Double) -> NSTimeInterval? {
-    if let trueAnomaly = trueAnomaly(orbit) {
-        if let angleToPrograde = angleToPrograde(orbit) {
-            if let meanMotion = meanMotion(orbit) {
-                let m1 = meanAnomalyWithTrueAnomaly(orbit, trueAnomaly)
-                let m2 = meanAnomalyWithTrueAnomaly(orbit, trueAnomaly + angleToPrograde - anAngleToPrograde)
-                return ((m2 - m1 + twoπ) % twoπ) / meanMotion
-            }
-        }
+    if let trueAnomaly = trueAnomaly(orbit),
+        angleToPrograde = angleToPrograde(orbit),
+        meanMotion = meanMotion(orbit) {
+            let m1 = meanAnomalyWithTrueAnomaly(orbit, trueAnomaly)
+            let m2 = meanAnomalyWithTrueAnomaly(orbit, trueAnomaly + angleToPrograde - anAngleToPrograde)
+            return ((m2 - m1 + twoπ) % twoπ) / meanMotion
     }
     return nil
 }

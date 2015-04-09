@@ -115,31 +115,25 @@ public func ejectionVelocityWithOrbit(manoeuvre: Manoeuvre, orbit: Orbit) -> Dou
 }
 
 public func ejectionAngle(manoeuvre: Manoeuvre) -> Double? {
-    if let sourceBody = manoeuvre.sourceBody {
-        if let sourceOrbitRadius = sourceBody.orbit?.semiMajorAxis {
-            if let targetOrbitRadius = manoeuvre.targetBody?.orbit?.semiMajorAxis {
-                if let periapsis = manoeuvre.sourceOrbit?.periapsis?.doubleValue {
-                    if let µ = sourceBody.orbit?.gravitationalParameter {
-                        if let v = ejectionVelocity(manoeuvre) {
-                            let r = sourceBody.radius + periapsis
-                            let e1 = v * v / 2 - µ / r
-                            let h = r * v
-                            let e2 = sqrt(1 + 2 * e1 * h * h / (µ * µ))
-                            return (sourceOrbitRadius > targetOrbitRadius ? 2 : 1) * M_PI - acos(1 / e2)
-                        }
-                    }
-                }
-            }
-        }
+    if let sourceBody = manoeuvre.sourceBody,
+        sourceOrbitRadius = sourceBody.orbit?.semiMajorAxis,
+        targetOrbitRadius = manoeuvre.targetBody?.orbit?.semiMajorAxis,
+        periapsis = manoeuvre.sourceOrbit?.periapsis?.doubleValue,
+        µ = sourceBody.orbit?.gravitationalParameter,
+        v = ejectionVelocity(manoeuvre) {
+            let r = sourceBody.radius + periapsis
+            let e1 = v * v / 2 - µ / r
+            let h = r * v
+            let e2 = sqrt(1 + 2 * e1 * h * h / (µ * µ))
+            return (sourceOrbitRadius > targetOrbitRadius ? 2 : 1) * M_PI - acos(1 / e2)
     }
     return nil
 }
 
 public func currentPhaseAngle(manoeuvre: Manoeuvre) -> Double? {
-    if let targetTrueLongitude = manoeuvre.targetBody?.orbit?.trueLongitude?.doubleValue {
-        if let sourceTrueLongitude = manoeuvre.sourceBody?.orbit?.trueLongitude?.doubleValue {
+    if let targetTrueLongitude = manoeuvre.targetBody?.orbit?.trueLongitude?.doubleValue,
+        sourceTrueLongitude = manoeuvre.sourceBody?.orbit?.trueLongitude?.doubleValue {
             return (targetTrueLongitude - sourceTrueLongitude) % twoπ
-        }
     }
     return nil
 }
@@ -147,14 +141,11 @@ public func currentPhaseAngle(manoeuvre: Manoeuvre) -> Double? {
 public func ejectionDeltaVWithOrbit(manoeuvre: Manoeuvre, orbit: Orbit) -> Double? {
     if orbit.primaryBody === manoeuvre.targetBody?.orbit?.primaryBody {
         return manoeuvre.hyperbolicExcessEscapeVelocity
-    } else if let ejectionVelocity = ejectionVelocityWithOrbit(manoeuvre, orbit) {
-        if let radius = orbit.primaryBody?.radius {
-            if let periapsis = periapsis(orbit) {
-                if let relativeVelocity = relativeVelocityWithRadius(orbit, periapsis + radius) {
-                    return abs(ejectionVelocity - relativeVelocity)
-                }
-            }
-        }
+    } else if let ejectionVelocity = ejectionVelocityWithOrbit(manoeuvre, orbit),
+        radius = orbit.primaryBody?.radius,
+        periapsis = periapsis(orbit),
+        relativeVelocity = relativeVelocityWithRadius(orbit, periapsis + radius) {
+            return abs(ejectionVelocity - relativeVelocity)
     }
     return nil
 }
@@ -167,30 +158,26 @@ public func ejectionDeltaV(manoeuvre: Manoeuvre) -> Double? {
 }
 
 public func captureDeltaV(manoeuvre: Manoeuvre) -> Double? {
-    if let orbit = manoeuvre.targetOrbit {
-        if let primaryBody = orbit.primaryBody {
+    if let orbit = manoeuvre.targetOrbit,
+        primaryBody = orbit.primaryBody {
             if primaryBody.maxAtmosphere > 0 && manoeuvre.aerobrake {
                 return 0
             } else if primaryBody === manoeuvre.sourceBody?.orbit?.primaryBody {
                 return manoeuvre.hyperbolicExcessCaptureVelocity
-            } else if let µ = primaryBody.orbit?.gravitationalParameter {
-                if let periapsis = periapsis(orbit) {
-                    if let relativeVelocity = manoeuvre.targetOrbit?.relativeVelocityWithRadius(periapsis + primaryBody.radius)?.doubleValue {
-                        let captureVelocity = sqrt(pow(manoeuvre.hyperbolicExcessCaptureVelocity, 2) + 2 * µ / (periapsis + primaryBody.radius))
-                        return abs(captureVelocity - relativeVelocity)
-                    }
-                }
+            } else if let µ = primaryBody.orbit?.gravitationalParameter,
+                periapsis = periapsis(orbit),
+                relativeVelocity = manoeuvre.targetOrbit?.relativeVelocityWithRadius(periapsis + primaryBody.radius)?.doubleValue {
+                    let captureVelocity = sqrt(pow(manoeuvre.hyperbolicExcessCaptureVelocity, 2) + 2 * µ / (periapsis + primaryBody.radius))
+                    return abs(captureVelocity - relativeVelocity)
             }
-        }
     }
     return nil
 }
 
 public func deltaVWithOrbit(manoeuvre: Manoeuvre, orbit: Orbit) -> Double? {
-    if let ejectionDeltaV = ejectionDeltaVWithOrbit(manoeuvre, orbit) {
-        if let captureDeltaV = captureDeltaV(manoeuvre) {
+    if let ejectionDeltaV = ejectionDeltaVWithOrbit(manoeuvre, orbit),
+        captureDeltaV = captureDeltaV(manoeuvre) {
             return ejectionDeltaV + manoeuvre.planeChangeDeltaV + captureDeltaV
-        }
     }
     return nil
 }
@@ -198,29 +185,24 @@ public func deltaVWithOrbit(manoeuvre: Manoeuvre, orbit: Orbit) -> Double? {
 public func deltaV(sourceOrbit: Orbit, targetOrbit: Orbit) -> Double? {
     let transfer = SimpleOrbit()
     copy(transfer, sourceOrbit)
-    if let radius = sourceOrbit.primaryBody?.radius {
-        if let periapsis = periapsis(sourceOrbit) {
-            if let apoapsis = apoapsis(targetOrbit) {
-                transfer.semiMajorAxis = (apoapsis + periapsis) / 2 + radius
-                transfer.eccentricity = eccentricityWithApoapsis(apoapsis, periapsis: periapsis, radius: radius)
-                if let v0 = relativeVelocityWithRadius(sourceOrbit, radius + periapsis) {
-                    if let v1 = relativeVelocityWithRadius(transfer, radius + periapsis) {
-                        if let v2 = relativeVelocityWithRadius(transfer, radius + apoapsis) {
-                            if let v3 = relativeVelocityWithRadius(targetOrbit, radius + apoapsis) {
-                                return abs(v1 - v0) + abs(v3 - v2)
-                            }
-                        }
-                    }
-                }
+    if let radius = sourceOrbit.primaryBody?.radius,
+        periapsis = periapsis(sourceOrbit),
+        apoapsis = apoapsis(targetOrbit) {
+            transfer.semiMajorAxis = (apoapsis + periapsis) / 2 + radius
+            transfer.eccentricity = eccentricityWithApoapsis(apoapsis, periapsis: periapsis, radius: radius)
+            if let v0 = relativeVelocityWithRadius(sourceOrbit, radius + periapsis),
+                v1 = relativeVelocityWithRadius(transfer, radius + periapsis),
+                v2 = relativeVelocityWithRadius(transfer, radius + apoapsis),
+                v3 = relativeVelocityWithRadius(targetOrbit, radius + apoapsis) {
+                    return abs(v1 - v0) + abs(v3 - v2)
             }
-        }
     }
     return nil
 }
 
 private func recalculateDeltaVWithLaunchManoeuvre(manoeuvre: Manoeuvre) {
-    if let targetBody = manoeuvre.targetBody {
-        if let targetOrbit = manoeuvre.targetOrbit {
+    if let targetBody = manoeuvre.targetBody,
+        targetOrbit = manoeuvre.targetOrbit {
             if targetBody.maxAtmosphere > 0 {
                 if targetOrbit.eccentricity == 0 && targetOrbit.apoapsis == targetBody.parkingOrbitHeight {
                     switch targetBody.name {
@@ -236,23 +218,19 @@ private func recalculateDeltaVWithLaunchManoeuvre(manoeuvre: Manoeuvre) {
                 copy(transfer, targetOrbit)
                 transfer.semiMajorAxis = periapsis / 2 + targetBody.radius
                 transfer.eccentricity = eccentricityWithApoapsis(periapsis, periapsis: 0, radius: targetBody.radius)
-                if let relativeVelocity = relativeVelocityWithRadius(transfer, targetBody.radius) {
-                    if let deltaV = deltaV(transfer, targetOrbit) {
+                if let relativeVelocity = relativeVelocityWithRadius(transfer, targetBody.radius),
+                    deltaV = deltaV(transfer, targetOrbit) {
                         manoeuvre.deltaV = relativeVelocity + deltaV - twoπ * targetBody.radius / targetBody.rotationPeriod
-                    }
                 }
             }
-        }
     }
 }
 
 private func recalculateDeltaVWithOrbitalChangeManouevre(manoeuvre: Manoeuvre) {
-    if let sourceOrbit = manoeuvre.sourceOrbit {
-        if let targetOrbit = manoeuvre.targetOrbit {
-            if let deltaV = deltaV(sourceOrbit, targetOrbit) {
-                manoeuvre.deltaV = deltaV
-            }
-        }
+    if let sourceOrbit = manoeuvre.sourceOrbit,
+        targetOrbit = manoeuvre.targetOrbit,
+        deltaV = deltaV(sourceOrbit, targetOrbit) {
+            manoeuvre.deltaV = deltaV
     }
 }
 
@@ -330,8 +308,8 @@ private func recalculateDeltaVWithTransferManoeuvre(manoeuvre: Manoeuvre) {
 
 private func recalculateDeltaVWithLandingManoeuvre(manoeuvre: Manoeuvre) {
     let sourceOrbit = manoeuvre.sourceOrbit!
-    if let sourceBody = sourceOrbit.primaryBody {
-        if let periapsis = periapsis(sourceOrbit) {
+    if let sourceBody = sourceOrbit.primaryBody,
+        periapsis = periapsis(sourceOrbit) {
             let transfer = SimpleOrbit()
             copy(transfer, sourceOrbit)
             let radius = sourceOrbit.primaryBody!.radius
@@ -345,7 +323,6 @@ private func recalculateDeltaVWithLandingManoeuvre(manoeuvre: Manoeuvre) {
                     manoeuvre.deltaV = deltaV + relativeVelocity - surfaceVelocity
                 }
             }
-        }
     }
 }
 

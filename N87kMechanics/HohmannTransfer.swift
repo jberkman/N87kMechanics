@@ -35,8 +35,8 @@ struct HohmannTransfer {
     let targetOrbit: Orbit
 
     init?(manoeuvre: Manoeuvre) {
-        if let sourceBody = manoeuvre.sourceBody {
-            if let targetBody = manoeuvre.targetBody {
+        if let sourceBody = manoeuvre.sourceBody,
+            targetBody = manoeuvre.targetBody {
                 if sourceBody === manoeuvre.targetBody?.orbit?.primaryBody && manoeuvre.sourceOrbit != nil {
                     type = .ToSecondary
                     sourceOrbit = manoeuvre.sourceOrbit!
@@ -47,17 +47,14 @@ struct HohmannTransfer {
                     sourceOrbit = manoeuvre.sourceBody!.orbit!
                     targetOrbit = manoeuvre.targetOrbit!
                     return
-                } else if let sourcePrimaryBody = sourceBody.orbit?.primaryBody {
-                    if let targetPrimaryBody = targetBody.orbit?.primaryBody {
-                        if sourcePrimaryBody === targetPrimaryBody {
-                            type = .BetweenSecondaries
-                            sourceOrbit = manoeuvre.sourceBody!.orbit!
-                            targetOrbit = manoeuvre.targetBody!.orbit!
-                            return
-                        }
-                    }
+                } else if let sourcePrimaryBody = sourceBody.orbit?.primaryBody,
+                    targetPrimaryBody = targetBody.orbit?.primaryBody where
+                    sourcePrimaryBody === targetPrimaryBody {
+                        type = .BetweenSecondaries
+                        sourceOrbit = manoeuvre.sourceBody!.orbit!
+                        targetOrbit = manoeuvre.targetBody!.orbit!
+                        return
                 }
-            }
         }
         return nil
     }

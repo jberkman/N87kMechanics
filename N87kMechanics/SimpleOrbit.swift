@@ -73,7 +73,7 @@ extension SimpleOrbit: Orbit {
     }
 
     @objc public class func keyPathsForValuesAffectingTimeToPeriapsis() -> NSSet {
-        return keyPathsForValuesAffectingMeanAnomaly().setByAddingObjectsFromSet(keyPathsForValuesAffectingMeanMotion())
+        return keyPathsForValuesAffectingMeanAnomaly().setByAddingObjectsFromSet(keyPathsForValuesAffectingMeanMotion() as Set<NSObject>)
     }
 
     // Apoapsis

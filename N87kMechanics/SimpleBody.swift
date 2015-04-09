@@ -54,12 +54,12 @@ public class SimpleBody: NSObject {
     }
 
     public init(values: NSDictionary) {
-        bodyID = (values["bodyID"] as NSNumber).longLongValue
-        name = values["name"] as String
-        mass = (values["mass"] as NSNumber).doubleValue
-        radius = (values["radius"] as NSNumber).doubleValue
-        rotationPeriod = (values["rotationPeriod"] as NSNumber).doubleValue
-        sphereOfInfluence = (values["sphereOfInfluence"] as NSNumber).doubleValue
+        bodyID = (values["bodyID"] as! NSNumber).longLongValue
+        name = values["name"] as! String
+        mass = (values["mass"] as! NSNumber).doubleValue
+        radius = (values["radius"] as! NSNumber).doubleValue
+        rotationPeriod = (values["rotationPeriod"] as! NSNumber).doubleValue
+        sphereOfInfluence = (values["sphereOfInfluence"] as! NSNumber).doubleValue
         maxAtmosphere = (values["maxAtmosphere"] as? NSNumber)?.doubleValue ?? 0
         atmosphereContainsOxygen = (values["atmosphereContainsOxygen"] as? NSNumber)?.boolValue ?? false
         super.init()
@@ -77,7 +77,7 @@ extension SimpleBody: Body {
 
     public func addSecondaryBody(body: Body) {
         body.orbit?.primaryBody = self
-        (secondaryBodies as NSMutableSet).addObject(body)
+        (secondaryBodies as! NSMutableSet).addObject(body)
     }
 
 }

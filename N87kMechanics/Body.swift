@@ -80,7 +80,7 @@ public func generate(body: Body) -> GeneratorOf<Body> {
 
     return GeneratorOf {
         if bodies == nil {
-            bodies = (body.secondaryBodies.allObjects as [Body]).generate()
+            bodies = (body.secondaryBodies.allObjects as! [Body]).generate()
             return body
         }
 

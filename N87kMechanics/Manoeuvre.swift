@@ -242,7 +242,9 @@ private func recalculateDeltaVWithTransferManoeuvre(manoeuvre: Manoeuvre) {
             let gamma = min(period(transfer.sourceOrbit)!, period(transfer.targetOrbit)!) / 6
             func nextWindow() -> (time: Double, transfer: (orbit: Orbit, error: Double)) {
                 let t2 = lower.time + gamma
-                return (time: t2, transfer: transfer.transferAtTime(t2))
+                let transfer2 = transfer.transferAtTime(t2)
+//                dlog("\(Int(lower.time / day)) || \(Int(t2 / day)) | \(Int(transfer2.error / day))")
+                return (time: t2, transfer: transfer2)
             }
 
             let startPositive = period(transfer.sourceOrbit)! < period(transfer.targetOrbit)!
@@ -256,7 +258,7 @@ private func recalculateDeltaVWithTransferManoeuvre(manoeuvre: Manoeuvre) {
                 upper = nextWindow()
             }
 
-            while min(abs(lower.transfer.error), abs(upper.transfer.error)) > 1 {
+            while abs(lower.time - upper.time) > 1 {
                 let t5 = (lower.time + upper.time) / 2
                 let guess = (time: t5, transfer: transfer.transferAtTime(t5))
 //                dlog("\(Int(lower.time / day)) | \(Int(lower.transfer.error / day)) || \(Int(guess.time / day)) | \(Int(guess.transfer.error / day)) || \(Int(upper.time / day)) | \(Int(upper.transfer.error / day))")
@@ -268,7 +270,7 @@ private func recalculateDeltaVWithTransferManoeuvre(manoeuvre: Manoeuvre) {
 //                dlog("lower.transfer.error: \(lower.transfer.error) upper.1: \(upper.transfer.error)")
             }
 
-//            dlog("\(Int(lower.time / day)) | \(Int(lower.transfer.error / day)) || \(Int(upper.time / day)) | \(Int(upper.transfer.error / day))")
+            dlog("\(Int(lower.time / day)) | \(Int(lower.transfer.error / day)) || \(Int(upper.time / day)) | \(Int(upper.transfer.error / day))")
 
             lower = abs(lower.transfer.error) < abs(upper.transfer.error) ? lower : upper
         }

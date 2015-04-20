@@ -99,7 +99,7 @@ class HohmannTransferTests: XCTestCase {
         transfer.targetBody = duna
         transfer.targetOrbit = SimpleOrbit()
         transfer.targetOrbit!.primaryBody = duna
-        transfer.targetOrbit!.semiMajorAxis = duna.parkingOrbitHeight!.doubleValue + duna.radius
+        transfer.targetOrbit!.semiMajorAxis = duna.parkingOrbitHeight + duna.radius
 
         transfer.recalculateDeltaV()
 
@@ -124,7 +124,7 @@ class HohmannTransferTests: XCTestCase {
         transfer.targetBody = eve
         transfer.targetOrbit = SimpleOrbit()
         transfer.targetOrbit!.primaryBody = eve
-        transfer.targetOrbit!.semiMajorAxis = eve.parkingOrbitHeight!.doubleValue + eve.radius
+        transfer.targetOrbit!.semiMajorAxis = eve.parkingOrbitHeight + eve.radius
 
         transfer.recalculateDeltaV()
 
@@ -148,7 +148,7 @@ class HohmannTransferTests: XCTestCase {
         transfer.targetBody = dres
         transfer.targetOrbit = SimpleOrbit()
         transfer.targetOrbit!.primaryBody = dres
-        transfer.targetOrbit!.semiMajorAxis = dres.parkingOrbitHeight!.doubleValue + dres.radius
+        transfer.targetOrbit!.semiMajorAxis = dres.parkingOrbitHeight + dres.radius
 
         transfer.recalculateDeltaV()
 
@@ -173,7 +173,7 @@ class HohmannTransferTests: XCTestCase {
         transfer.targetBody = mun
         transfer.targetOrbit = SimpleOrbit()
         transfer.targetOrbit!.primaryBody = mun
-        transfer.targetOrbit!.semiMajorAxis = mun.parkingOrbitHeight!.doubleValue + mun.radius
+        transfer.targetOrbit!.semiMajorAxis = mun.parkingOrbitHeight + mun.radius
 
         transfer.recalculateDeltaV()
 
@@ -200,7 +200,7 @@ class HohmannTransferTests: XCTestCase {
         transfer.sourceBody = mun
         transfer.sourceOrbit = SimpleOrbit()
         transfer.sourceOrbit!.primaryBody = mun
-        transfer.sourceOrbit!.semiMajorAxis = mun.parkingOrbitHeight!.doubleValue + mun.radius
+        transfer.sourceOrbit!.semiMajorAxis = mun.parkingOrbitHeight + mun.radius
 
         transfer.recalculateDeltaV()
 
@@ -225,7 +225,7 @@ class HohmannTransferTests: XCTestCase {
         transfer.targetBody = minmus
         transfer.targetOrbit = SimpleOrbit()
         transfer.targetOrbit!.primaryBody = minmus
-        transfer.targetOrbit!.semiMajorAxis = minmus.parkingOrbitHeight!.doubleValue + minmus.radius
+        transfer.targetOrbit!.semiMajorAxis = minmus.parkingOrbitHeight + minmus.radius
 
         transfer.recalculateDeltaV()
 
@@ -252,7 +252,7 @@ class HohmannTransferTests: XCTestCase {
         transfer.sourceBody = minmus
         transfer.sourceOrbit = SimpleOrbit()
         transfer.sourceOrbit!.primaryBody = minmus
-        transfer.sourceOrbit!.semiMajorAxis = minmus.parkingOrbitHeight!.doubleValue + minmus.radius
+        transfer.sourceOrbit!.semiMajorAxis = minmus.parkingOrbitHeight + minmus.radius
 
         transfer.recalculateDeltaV()
 

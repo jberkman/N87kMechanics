@@ -85,7 +85,8 @@ struct HohmannTransfer {
             }
         }()
 
-//        dlog("target goes from \(targetTrueLongitude * 180 / M_PI) to \(targetTrueLongitude2 * 180 / M_PI)")
+//        dlog("target longitude \(targetTrueLongitude * 180 / M_PI) to \(trueLongitudeWithTrueAnomaly(targetOrbit, targetTrueAnomaly2) * 180 / M_PI)")
+//        dlog("target anomaly \(targetTrueAnomaly * 180 / M_PI) to \(targetTrueAnomaly2 * 180 / M_PI)")
 
         var r1 = radiusWithTrueAnomaly(sourceOrbit, sourceTrueAnomaly)
         let r2 = radiusWithTrueAnomaly(targetOrbit, targetTrueAnomaly2)
@@ -103,7 +104,7 @@ struct HohmannTransfer {
         orbit.argumentOfPeriapsis = (sourceOrbit.argumentOfPeriapsis + sourceTrueAnomaly) % twoπ
         orbit.longitudeOfAscendingNode = sourceOrbit.longitudeOfAscendingNode
 
-//        dlog("half period: \(Int(orbit.period!.doubleValue / 2 / day)) t2: \(Int(t2 / day)) error: \(Int((orbit.period!.doubleValue - t2) / day))")
+//        dlog("half period: \(Int(orbit.period!.doubleValue / 2 / day)) t2: \(Int(t2 / day)) error: \(Int(((orbit.period!.doubleValue / 2) - t2) / day))")
 
         return (orbit: orbit, error: (orbit.period!.doubleValue / 2) - t2)
     }

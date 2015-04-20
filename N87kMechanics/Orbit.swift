@@ -199,13 +199,18 @@ public func meanAnomaly(orbit: Orbit) -> Double? {
 
 public func meanAnomalyWithTrueAnomaly(orbit: Orbit, trueAnomaly: Double) -> Double {
     let E = eccentricAnomalyWithTrueAnomaly(orbit, trueAnomaly)
-    return E - orbit.eccentricity * sin(E)
+    return meanAnomalyWithEccentricAnomaly(orbit, E)
+}
+
+public func meanAnomalyWithEccentricAnomaly(orbit: Orbit, eccentricAnomaly: Double) -> Double {
+    return eccentricAnomaly - orbit.eccentricity * sin(eccentricAnomaly)
 }
 
 // True Anomaly
 public func trueAnomalyAtTime(orbit: Orbit, time: NSTimeInterval) -> Double? {
-    if let M = meanAnomalyAtTime(orbit, time) {
-        return (M + 2 * orbit.eccentricity * sin(M) + 1.25 * pow(orbit.eccentricity, 2) * sin(2 * M)) % twoπ
+    if let E = eccentricAnomalyAtTime(orbit, time) {
+        let e = orbit.eccentricity
+        return 2 * atan2(sqrt(1 + e) * sin(E / 2), sqrt(1 - e) * cos(E / 2))
     }
     return nil
 }
@@ -219,6 +224,50 @@ public func trueAnomalyWithTrueLongitude(orbit: Orbit, trueLongitude: Double) ->
 }
 
 // Eccentric Anomaly
+public func eccentricAnomalyAtTime(orbit: Orbit, time: NSTimeInterval) -> Double? {
+    if let M = meanAnomalyAtTime(orbit, time) {
+        return eccentricAnomalyWithMeanAnomaly(orbit, M)
+    }
+    return nil
+}
+
+public func eccentricAnomalyWithMeanAnomaly(orbit: Orbit, meanAnomaly: Double) -> Double {
+    let M = meanAnomaly
+    var E1 = M
+    var M1 = meanAnomalyWithEccentricAnomaly(orbit, E1)
+    var E2 = M
+    var M2 = M1
+    if abs(M - M1) > 0.000_1 {
+        outer: for var n = 0.0; true; n++ {
+            for i in [ 1.0, -1.0 ] {
+                E2 = E1 + i * n * M_PI_4
+                M2 = meanAnomalyWithEccentricAnomaly(orbit, E2)
+//                dlog("initial: M: \(M * 180 / M_PI) E1: \(E1 * 180 / M_PI) -> E2: \(E2 * 180 / M_PI) | M1: \(M1 * 180 / M_PI) -> M2: \(M2 * 180 / M_PI)")
+                if (M - M1 > 0) != (M - M2 > 0) {
+                    break outer
+                }
+            }
+        }
+    }
+
+    var n = 0
+    while min(abs(M - M1), abs(M - M2)) > 0.000_1 {
+        let E_ = (E1 + E2) / 2
+        let M_ = meanAnomalyWithEccentricAnomaly(orbit, E_)
+        if (M - M1 > 0) == (M - M_ > 0) {
+            E1 = E_
+            M1 = M_
+        } else {
+            E2 = E_
+            M2 = M_
+        }
+        ++n
+//        dlog("iter \(n): E1: \(E1 * 180 / M_PI) -> E2: \(E2 * 180 / M_PI) | M1: \(M1 * 180 / M_PI) -> M2: \(M2 * 180 / M_PI)")
+    }
+//    dlog("done: 1: \(E1) 2: \(E2)")
+    return abs(M - M1) < abs(M - M2) ? E1 : E2
+}
+
 public func eccentricAnomalyWithTrueAnomaly(orbit: Orbit, trueAnomaly: Double) -> Double {
     let cosv = cos(trueAnomaly)
     let tmp = acos((orbit.eccentricity + cosv) / (1 + orbit.eccentricity * cosv))

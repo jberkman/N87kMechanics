@@ -1,5 +1,5 @@
 //
-//  KebolSystem.swift
+//  KerbolSystem.swift
 //  N87kMechanics
 //
 //  Created by jacob berkman on 2014-11-30.
@@ -25,20 +25,18 @@
 //
 
 import Foundation
-import CoreData
-import N87kMechanics
 
-var sharedBodies: [Body]!
+private var sharedBodies: [Body]!
 
-class KerbolSystem {
+public class KerbolSystem {
 
-    class var bodies: [Body] {
+    public class var bodies: [Body] {
         if sharedBodies == nil {
             if let URL = NSBundle(forClass: self).URLForResource("KerbolSystem", withExtension: "plist") {
                 if let plist = NSArray(contentsOfURL: URL) {
                     let bodies = reduce(enumerate(plist), [String: SimpleBody]()) {
                         let (bodyID, values: AnyObject) = $1
-                        let mutableValues = NSMutableDictionary(dictionary: values as NSDictionary)
+                        let mutableValues = NSMutableDictionary(dictionary: values as! NSDictionary)
                         mutableValues["bodyID"] = bodyID
                         let body = SimpleBody(values: mutableValues)
                         if let orbitValues = values["orbit"] as? [NSObject: AnyObject] {
